@@ -1,0 +1,14 @@
+using Domain.StronglyTypedIds;
+
+namespace Domain.Entities;
+
+public class HousePost
+{
+    public HousePostId Id { get; set; }
+
+    public HouseId HouseId { get; set; }
+    public PostId PostId { get; set; }
+    
+    public House House { get; set; }
+    public Post Post { get; set; }
+}
