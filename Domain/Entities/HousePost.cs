@@ -9,6 +9,6 @@ public class HousePost
     public HouseId HouseId { get; set; }
     public PostId PostId { get; set; }
     
-    public House House { get; set; }
-    public Post Post { get; set; }
+    public House House { get; private set; }
+    public Post Post { get; private set; }
 }
