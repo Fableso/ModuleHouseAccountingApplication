@@ -4,7 +4,6 @@ public static class DomainConstants
 {
     public const int MaxWeekMarkCommentLength = 2000;
     public const int MaxBrigadeNameLength = 50;
-    public const int MaxHouseHistoryActionLength = 3000;
     public const int MaxAuthorNameLength = 50;
     public const int MaxPostNameLength = 100;
 }

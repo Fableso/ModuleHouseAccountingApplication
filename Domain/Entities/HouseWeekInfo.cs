@@ -23,8 +23,8 @@ public class HouseWeekInfo : BaseEntity<HouseWeekInfoId>
     public DateOnly StartDate { get; private set; }
     public WeekStatus Status { get; private set; }
     public bool OnTime { get; private set; }
-    
-    public House House { get; private set; }
+
+    public House House { get; private set; } = null!;
     
     public IReadOnlyList<WeekMark> WeekComments => _weekComments;
     private List<WeekMark> _weekComments;

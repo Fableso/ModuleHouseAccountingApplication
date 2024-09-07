@@ -9,7 +9,7 @@ public class House : BaseEntity<HouseId>
 {
     private House()
     {
-        _posts = new List<Post>();
+        _posts = new List<HousePost>();
     }
     public House(HouseId houseId, HouseMetrics houseMetrics, Point topLeftCornerCoordinates, HouseStatus currentState,
         DateSpan termsAccordingToDocuments, Brigade brigade, DateSpan? realTerms = null) : this()
@@ -46,7 +46,7 @@ public class House : BaseEntity<HouseId>
 
     public string Brigade { get; private set; } = string.Empty;
     
-    public IReadOnlyList<Post> Posts => _posts;
+    public IReadOnlyList<HousePost> Posts => _posts;
 
-    private List<Post> _posts;
+    private List<HousePost> _posts;
 }

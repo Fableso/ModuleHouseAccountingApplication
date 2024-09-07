@@ -20,8 +20,8 @@ public class WeekMark : BaseEntity<WeekMarkId>
     public MarkType MarkType { get; set; }
 
     public string Comment { get; set; } = string.Empty;
-    
-    public HouseWeekInfo HouseWeekInfo { get; private set; }
+
+    public HouseWeekInfo HouseWeekInfo { get; private set; } = null!;
 
     public WeekMark UpdateWeekMark(WeekMark weekMark)
     {
