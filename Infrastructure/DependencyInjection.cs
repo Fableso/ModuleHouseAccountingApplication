@@ -15,7 +15,7 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<MhDbContext>());
-
+        
         return services;
     }
 }

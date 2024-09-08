@@ -12,9 +12,15 @@ public class PostName : ValueObject
     
     public string Value { get; }
 
-    public static Result<PostName> Create(string comment)
+    public static Result<PostName> Create(string postName)
     {
-        var trimmedName = comment.Trim();
+        var trimmedName = postName.Trim();
+        
+        if (string.IsNullOrEmpty(trimmedName))
+        {
+            return Result.Fail("Post name must not be empty");
+        }
+        
         return trimmedName.Length > DomainConstants.MaxPostNameLength
             ? Result.Fail($"Post name must be shorter than {DomainConstants.MaxPostNameLength} symbols")
             : Result.Ok(new PostName(trimmedName));

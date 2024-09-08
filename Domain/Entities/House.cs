@@ -34,7 +34,7 @@ public class House : BaseEntity<HouseId>
     
     public int TopLeftCornerY { get;  private set; }
     
-    public HouseStatus CurrentState { get;  private set; }
+    public HouseStatus CurrentState { get;  set; }
     
     public DateOnly OfficialStartDate { get; private set; }
     
@@ -49,4 +49,33 @@ public class House : BaseEntity<HouseId>
     public IReadOnlyList<HousePost> Posts => _posts;
 
     private List<HousePost> _posts;
+    
+    public void ChangeBrigade(Brigade newBrigade)
+    {
+        Brigade = newBrigade.Value;
+    }
+    
+    public void ChangeHousePosition(Point newTopLeftCornerCoordinates)
+    {
+        TopLeftCornerX = newTopLeftCornerCoordinates.X;
+        TopLeftCornerY = newTopLeftCornerCoordinates.Y;
+    }
+    
+    public void ChangeHouseMetrics(HouseMetrics newHouseMetrics)
+    {
+        Length = newHouseMetrics.Length;
+        Width = newHouseMetrics.Width;
+    }
+    
+    public void ChangeDocumentsTerms(DateSpan newTerms)
+    {
+        OfficialStartDate = newTerms.StartDate;
+        OfficialEndDate = newTerms.EndDate;
+    }
+    
+    public void ChangeRealTerms(DateSpan newRealTerms)
+    {
+        RealStartDate = newRealTerms.StartDate;
+        RealEndDate = newRealTerms.EndDate;
+    }
 }

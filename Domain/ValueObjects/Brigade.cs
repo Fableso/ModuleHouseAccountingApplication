@@ -12,9 +12,14 @@ public class Brigade : ValueObject
     
     public string Value { get; }
 
-    public static Result<Brigade> Create(string comment)
+    public static Result<Brigade> Create(string brigadeName)
     {
-        var trimmedBrigade = comment.Trim();
+        var trimmedBrigade = brigadeName.Trim();
+        if (string.IsNullOrEmpty(trimmedBrigade))
+        {
+            return Result.Fail("Brigade name must not be empty");
+        }
+        
         return trimmedBrigade.Length > DomainConstants.MaxBrigadeNameLength
             ? Result.Fail($"Brigade name must be shorter than {DomainConstants.MaxBrigadeNameLength} symbols")
             : Result.Ok(new Brigade(trimmedBrigade));
