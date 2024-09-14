@@ -5,6 +5,7 @@ using Application.DTO.HouseWeekInfo.Request;
 using Application.DTO.HouseWeekInfo.Response;
 using Application.DTO.Post.Request;
 using Application.DTO.Post.Response;
+using Application.DTO.WeekMark.Request;
 using Application.DTO.WeekMark.Response;
 using Application.Mappers;
 using AutoMapper;
@@ -288,6 +289,19 @@ public static class TestHelper
         Id = new HouseWeekInfoId(1),
         Status = WeekStatus.OnHold,
         OnTime = false
+    };
+    
+    public static CreateWeekMarkRequest GetCreateWeekMarkRequest() => new()
+    {
+        HouseWeekInfoId = new HouseWeekInfoId(1),
+        MarkType = MarkType.BlueMark,
+        Comment = "Test comment"
+    };
+
+    public static UpdateWeekMarkRequest GetUpdateWeekMarkRequest() => new()
+    {
+        MarkType = MarkType.RedMark,
+        Comment = "Updated test comment"
     };
     
 }

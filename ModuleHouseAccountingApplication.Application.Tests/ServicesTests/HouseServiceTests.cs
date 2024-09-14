@@ -137,13 +137,14 @@ public class HouseServiceTests
     {
         // Arrange
         var createRequest = TestHelper.GetCreateHouseRequest();
+        var expectedHouseResponseAmount = await _context.Houses.CountAsync() + 1;
 
         // Act
         var houseResponse = await _service.AddAsync(createRequest);
 
         // Assert
         Assert.NotNull(houseResponse);
-        Assert.Equal(4, await _context.Houses.CountAsync());
+        Assert.Equal(expectedHouseResponseAmount, await _context.Houses.CountAsync());
         Assert.Equal(createRequest.Id, houseResponse.Model);
         Assert.Equal(createRequest.Length, houseResponse.Length);
         Assert.Equal(createRequest.Width, houseResponse.Width);
@@ -200,12 +201,13 @@ public class HouseServiceTests
     {
         // Arrange
         var houseId = new HouseId("MB 110-1");
+        var expectedHouseResponseAmount = await _context.Houses.CountAsync() - 1;
 
         // Act
         await _service.RemoveByIdAsync(houseId);
 
         // Assert
-        Assert.Equal(2, await _context.Houses.CountAsync());
+        Assert.Equal(expectedHouseResponseAmount, await _context.Houses.CountAsync());
         Assert.Null(await _context.Houses.FindAsync(houseId));
     }
     
@@ -225,12 +227,13 @@ public class HouseServiceTests
     {
         // Arrange
         var houseId = new HouseId("MB 140-1");
+        var expectedHouseResponseAmount = await _context.Houses.CountAsync() - 1;
 
         // Act
         await _service.RemoveByIdAsync(houseId);
 
         // Assert
-        Assert.Equal(2, await _context.Houses.CountAsync());
+        Assert.Equal(expectedHouseResponseAmount, await _context.Houses.CountAsync());
         Assert.Null(await _context.Houses.FindAsync(houseId));
         Assert.Empty(await _context.HousePosts.Where(hp => hp.HouseId == houseId).ToListAsync());
         Assert.Empty(await _context.HouseWeekInfos.Where(hwi => hwi.HouseId == houseId).ToListAsync());

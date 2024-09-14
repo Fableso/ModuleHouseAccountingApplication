@@ -124,13 +124,14 @@ public class HouseWeekInfoServiceTests
     {
         // Arrange
         var createHouseWeekInfoRequest = TestHelper.GetCreateHouseWeekInfoRequest();
+        var expectedHouseWeekInfoAmount = await _context.HouseWeekInfos.CountAsync() + 1;
         
         // Act
         var houseWeekInfoResponse = await _service.AddAsync(createHouseWeekInfoRequest);
         
         // Assert
         Assert.NotNull(houseWeekInfoResponse);
-        Assert.Equal(9, await _context.HouseWeekInfos.CountAsync());
+        Assert.Equal(expectedHouseWeekInfoAmount, await _context.HouseWeekInfos.CountAsync());
         Assert.Equal(createHouseWeekInfoRequest.HouseId, houseWeekInfoResponse.HouseId);
         Assert.Equal(createHouseWeekInfoRequest.StartDate, houseWeekInfoResponse.StartDate);
         Assert.Equal(createHouseWeekInfoRequest.Status, houseWeekInfoResponse.Status);
@@ -144,13 +145,14 @@ public class HouseWeekInfoServiceTests
         var houseWeekInfoId = (await _context.HouseWeekInfos.FirstAsync())!.Id;
         var updateHouseWeekInfoRequest = TestHelper.GetUpdateHouseWeekInfoRequest();
         updateHouseWeekInfoRequest.Id = houseWeekInfoId;
+        var expectedHouseWeekInfoAmount = await _context.HouseWeekInfos.CountAsync();
         
         // Act
         var houseWeekInfoResponse = await _service.UpdateStatusAsync(updateHouseWeekInfoRequest);
         
         // Assert
         Assert.NotNull(houseWeekInfoResponse);
-        Assert.Equal(8, await _context.HouseWeekInfos.CountAsync());
+        Assert.Equal(expectedHouseWeekInfoAmount, await _context.HouseWeekInfos.CountAsync());
         Assert.Equal(updateHouseWeekInfoRequest.Id, houseWeekInfoResponse.Id);
         Assert.Equal(updateHouseWeekInfoRequest.HouseId, houseWeekInfoResponse.HouseId);
         Assert.Equal(updateHouseWeekInfoRequest.Status, houseWeekInfoResponse.Status);
@@ -174,6 +176,7 @@ public class HouseWeekInfoServiceTests
     {
         // Arrange
         var houseWeekInfoId = (await _context.HouseWeekInfos.FirstAsync())!.Id;
+        var expectedHouseWeekInfoAmount = await _context.HouseWeekInfos.CountAsync() - 1;
         
         // Act
         await _service.RemoveByIdAsync(houseWeekInfoId);
@@ -181,7 +184,7 @@ public class HouseWeekInfoServiceTests
         
         // Assert
         Assert.Null(houseWeekInfo);
-        Assert.Equal(7, await _context.HouseWeekInfos.CountAsync());
+        Assert.Equal(expectedHouseWeekInfoAmount, await _context.HouseWeekInfos.CountAsync());
     }
     
     [Fact]

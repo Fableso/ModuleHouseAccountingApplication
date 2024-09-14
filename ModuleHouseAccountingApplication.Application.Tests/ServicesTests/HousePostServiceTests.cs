@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Exceptions;
 using Application.Services;
 using Domain.StronglyTypedIds;
 using Infrastructure.Data;
@@ -67,7 +68,7 @@ public class HousePostServiceTests
         var newPostIds = new List<PostId> { new PostId(1) };
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
             _service.UpdatePostsForHouseAsync(houseId, newPostIds));
 
         Assert.Equal($"House with ID nonexistent does not exist.", exception.Message);
@@ -81,7 +82,7 @@ public class HousePostServiceTests
         var houseId = await _context.Houses.Select(x => x.Id).FirstAsync();
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
             _service.UpdatePostsForHouseAsync(houseId, newPostIds));
 
         Assert.Contains("The following Post IDs do not exist: 99", exception.Message);
