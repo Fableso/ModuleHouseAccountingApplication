@@ -1,7 +1,9 @@
 using Application.Abstractions;
+using Application.DTO.HouseWeekInfo.Response;
 using Application.Mappers;
 using Application.Services;
 using AutoMapper;
+using Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -18,6 +20,9 @@ public static class DependencyInjection
 
         services.AddScoped<IHouseService, HouseService>();
         services.AddScoped<IHousePostService, HousePostService>();
+        services.AddScoped<IPostService, PostService>();
+        services.AddScoped<IHouseWeekInfoService, HouseWeekInfoService>();
+        services.AddScoped<IWeekMarkService, WeekMarkService>();
 
         return services;
     }
