@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Exceptions;
 using Domain.Entities;
 using Domain.StronglyTypedIds;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,7 @@ public class HousePostService : IHousePostService
         var houseExists = await _context.Houses.AnyAsync(h => h.Id == houseId, token);
         if (!houseExists)
         {
-            throw new ArgumentException($"House with ID {houseId.Value} does not exist.");
+            throw new EntityNotFoundException($"House with ID {houseId.Value} does not exist.");
         }
     }
 
@@ -57,7 +58,7 @@ public class HousePostService : IHousePostService
         var invalidPostIds = postIdsList.Except(existingPostIds).ToList();
         if (invalidPostIds.Count != 0)
         {
-            throw new ArgumentException($"The following Post IDs do not exist: {string.Join(", ", invalidPostIds.Select(x => x.Value))}");
+            throw new EntityNotFoundException($"The following Post IDs do not exist: {string.Join(", ", invalidPostIds.Select(x => x.Value))}");
         }
     }
 

@@ -37,7 +37,7 @@ public class PostServiceTests
     {
         // Arrange
         var postId = new PostId(1);
-        var expectedPostResponse = TestHelper.ExpectedPostResponses().First();
+        var expectedPostResponse = TestHelper.ExpectedPostResponses().First(x => x.Id == postId);
         
         // Act
         var postResponse = await _service.GetByIdAsync(postId);
@@ -65,13 +65,14 @@ public class PostServiceTests
     {
         // Arrange
         var postRequest = TestHelper.GetCreatePostRequest();
+        var expectedPostResponseAmount = await _context.Posts.CountAsync() + 1;
         
         // Act
         var postResponse = await _service.AddAsync(postRequest);
         
         // Assert
         Assert.NotNull(postResponse);
-        Assert.Equal(4, await _context.Posts.CountAsync());
+        Assert.Equal(expectedPostResponseAmount, await _context.Posts.CountAsync());
         Assert.Equal(postRequest.Name, postResponse.Name);
         Assert.Equal(postRequest.Area, postResponse.Area);
     }
@@ -81,13 +82,14 @@ public class PostServiceTests
     {
         // Arrange
         var postRequest = TestHelper.GetUpdatePostRequest();
+        var expectedPostResponseAmount = await _context.Posts.CountAsync();
         
         // Act
         var postResponse = await _service.UpdateAsync(postRequest);
         
         // Assert
         Assert.NotNull(postResponse);
-        Assert.Equal(3, await _context.Posts.CountAsync());
+        Assert.Equal(expectedPostResponseAmount, await _context.Posts.CountAsync());
         Assert.Equal(postRequest.Name, postResponse.Name);
         Assert.Equal(postRequest.Area, postResponse.Area);
     }
@@ -109,6 +111,7 @@ public class PostServiceTests
     {
         // Arrange
         var postId = new PostId(1);
+        var expectedPostResponseAmount = await _context.Posts.CountAsync() - 1;
         
         // Act
         await _service.RemoveByIdAsync(postId);
@@ -116,7 +119,7 @@ public class PostServiceTests
         
         // Assert
         Assert.Null(post);
-        Assert.Equal(2, await _context.Posts.CountAsync());
+        Assert.Equal(expectedPostResponseAmount, await _context.Posts.CountAsync());
     }
     
     [Fact]
