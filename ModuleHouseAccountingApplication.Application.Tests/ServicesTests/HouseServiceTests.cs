@@ -16,7 +16,7 @@ public class HouseServiceTests
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly Mock<IHousePostService> _mockHousePostService;
-    private readonly HouseService _service;
+    private readonly IHouseService _service;
 
     public HouseServiceTests()
     {

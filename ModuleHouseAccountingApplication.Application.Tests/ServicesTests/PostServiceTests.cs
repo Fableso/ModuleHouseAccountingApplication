@@ -14,7 +14,7 @@ public class PostServiceTests
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly PostService _service;
+    private readonly IPostService _service;
 
     public PostServiceTests()
     {

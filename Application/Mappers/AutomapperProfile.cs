@@ -48,13 +48,16 @@ public class AutomapperProfile : Profile
             .ForMember(p => p.Id, pr => pr.Ignore())
             .ForMember(p => p.Houses, pr => pr.Ignore());
         CreateMap<UpdatePostRequest, Post>()
-            .ForMember(post => post.Name, request => request.MapFrom(x => PostName.Create(x.Name).Value))
+            .ConstructUsing(post => new Post(PostName.Create(post.Name).Value))
             .ForMember(p => p.Houses, pr => pr.Ignore());
 
         CreateMap<HouseWeekInfo, HouseWeekInfoResponse>()
             .ForMember(hwir => hwir.WeekMarkResponses, hwi => hwi.MapFrom(x => x.WeekComments));
         CreateMap<CreateHouseWeekInfoRequest, HouseWeekInfo>()
             .ForMember(hwi => hwi.Id, hwi => hwi.Ignore())
+            .ForMember(hwi => hwi.House, hwi => hwi.Ignore())
+            .ForMember(hwi => hwi.WeekComments, hwi => hwi.Ignore());
+        CreateMap<UpdateHouseWeekInfoRequest, HouseWeekInfo>()
             .ForMember(hwi => hwi.House, hwi => hwi.Ignore())
             .ForMember(hwi => hwi.WeekComments, hwi => hwi.Ignore());
         CreateMap<CreateWeekMarkRequest, WeekMark>()

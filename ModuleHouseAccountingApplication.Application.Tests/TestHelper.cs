@@ -1,6 +1,8 @@
 using Application.Abstractions;
 using Application.DTO.House.Request;
 using Application.DTO.House.Response;
+using Application.DTO.HouseWeekInfo.Request;
+using Application.DTO.HouseWeekInfo.Response;
 using Application.DTO.Post.Request;
 using Application.DTO.Post.Response;
 using Application.DTO.WeekMark.Response;
@@ -136,6 +138,81 @@ public static class TestHelper
             Brigade = "MarkusBrigade",
         };
     }
+
+    public static IEnumerable<HouseWeekInfoResponse> ExpectedHouseWeekInfoResponses()
+    {
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(1),
+            StartDate = new DateOnly(2024, 8, 1),
+            OnTime = true,
+            Status = WeekStatus.InProcess,
+            HouseId = new HouseId("MB 110-1")
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(2),
+            StartDate = new DateOnly(2024, 8, 8),
+            OnTime = true,
+            Status = WeekStatus.OnHold,
+            HouseId = new HouseId("MB 110-1")
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(3),
+            StartDate = new DateOnly(2024, 8, 15),
+            OnTime = false,
+            Status = WeekStatus.OnHold,
+            HouseId = new HouseId("MB 110-1")
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(4),
+            StartDate = new DateOnly(2023, 9, 8),
+            OnTime = false,
+            Status = WeekStatus.InProcess,
+            HouseId = new HouseId("MB 140-1")
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(5),
+            StartDate = new DateOnly(2023, 9, 15),
+            Status = WeekStatus.InProcess,
+            HouseId = new HouseId("MB 140-1"),
+            OnTime = true,
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(6),
+            StartDate = new DateOnly(2025, 8, 20),
+            Status = WeekStatus.OnHold,
+            HouseId = new HouseId("MB 56-1"),
+            OnTime = false
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(7),
+            StartDate = new DateOnly(2025, 8, 27),
+            Status = WeekStatus.OnHold,
+            HouseId = new HouseId("MB 56-1"),
+            OnTime = true
+        };
+        
+        yield return new HouseWeekInfoResponse
+        {
+            Id = new HouseWeekInfoId(8),
+            StartDate = new DateOnly(2025, 9, 5),
+            Status = WeekStatus.OnHold,
+            HouseId = new HouseId("MB 56-1"),
+            OnTime = false
+        };
+    }
     
     public static IEnumerable<PostResponse> ExpectedPostResponses()
     {
@@ -197,4 +274,20 @@ public static class TestHelper
         Name = "UpdatedPost",
         Area = 200
     };
+    
+    public static CreateHouseWeekInfoRequest GetCreateHouseWeekInfoRequest() => new()
+    {
+        HouseId = new HouseId("MB 110-1"),
+        StartDate = new DateOnly(2024, 8, 1),
+        Status = WeekStatus.InProcess,
+        OnTime = true
+    };
+    
+    public static UpdateHouseWeekInfoRequest GetUpdateHouseWeekInfoRequest() => new()
+    {
+        Id = new HouseWeekInfoId(1),
+        Status = WeekStatus.OnHold,
+        OnTime = false
+    };
+    
 }

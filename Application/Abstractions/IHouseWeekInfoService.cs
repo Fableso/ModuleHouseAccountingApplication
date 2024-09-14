@@ -7,6 +7,7 @@ namespace Application.Abstractions;
 
 public interface IHouseWeekInfoService
 {
+    Task<HouseWeekInfoResponse?> GetByIdAsync(HouseWeekInfoId id, CancellationToken token = default);
     Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosInTimeSpanAsync(DateSpan dateSpan, CancellationToken token = default);
     Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosForHouseAsync(HouseId houseId, CancellationToken token = default);
     Task<HouseWeekInfoResponse> AddAsync(CreateHouseWeekInfoRequest request, CancellationToken token = default);

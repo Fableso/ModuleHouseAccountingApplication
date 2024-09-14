@@ -46,7 +46,7 @@ public class PostService : IPostService
         var postToDelete = await _context.Posts.FindAsync(id, token);
         if (postToDelete is null)
         {
-            throw new EntityNotFoundException($"Post with id {id.Value} not found");
+            throw new EntityNotFoundException($"Post with ID {id.Value} not found");
         }
         _context.Posts.Remove(postToDelete);
         await _context.SaveChangesAsync(token);
@@ -57,7 +57,7 @@ public class PostService : IPostService
         var existingPost = await _context.Posts.FindAsync(post.Id, token);
         if (existingPost is null)
         {
-            throw new EntityNotFoundException($"Post with id {post.Id.Value} not found");
+            throw new EntityNotFoundException($"Post with ID {post.Id.Value} not found");
         }
         var updatedPost = _mapper.Map(post, existingPost);
         _context.Posts.Update(updatedPost);

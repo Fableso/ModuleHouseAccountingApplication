@@ -9,7 +9,7 @@ namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 public class HousePostServiceTests
 {
     private readonly IApplicationDbContext _context;
-    private readonly HousePostService _service;
+    private readonly IHousePostService _service;
 
     public HousePostServiceTests()
     {
