@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.DTO.House.Request;
 using Application.DTO.House.Response;
+using Application.DTO.Post.Request;
 using Application.DTO.Post.Response;
 using Application.DTO.WeekMark.Response;
 using Application.Mappers;
@@ -136,6 +137,28 @@ public static class TestHelper
         };
     }
     
+    public static IEnumerable<PostResponse> ExpectedPostResponses()
+    {
+        yield return new PostResponse
+        {
+            Id = new PostId(1),
+            Name = "FirstPost",
+            Area = 50
+        };
+        yield return new PostResponse
+        {
+            Id = new PostId(2),
+            Name = "SecondPost",
+            Area = null
+        };
+        yield return new PostResponse
+        {
+            Id = new PostId(3),
+            Name = "ThirdPost",
+            Area = 140
+        };
+    }
+    
     public static CreateHouseRequest GetCreateHouseRequest() => new()
     {
         Id = new HouseId("MB 200-1"),
@@ -160,5 +183,18 @@ public static class TestHelper
         OfficialEndDate = new DateOnly(2024, 12, 31),
         Brigade = "NewBrigade",
         PostIds = new List<PostId> { new PostId(3), new PostId(2) }
+    };
+    
+    public static CreatePostRequest GetCreatePostRequest() => new()
+    {
+        Name = "NewPost",
+        Area = 100
+    };
+    
+    public static UpdatePostRequest GetUpdatePostRequest() => new()
+    {
+        Id = new PostId(1),
+        Name = "UpdatedPost",
+        Area = 200
     };
 }

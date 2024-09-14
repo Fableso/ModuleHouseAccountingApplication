@@ -9,8 +9,7 @@ public interface IPostService
 {
     Task<IEnumerable<PostResponse>> GetAllAsync(CancellationToken token = default);
     Task<PostResponse?> GetByIdAsync(PostId id, CancellationToken token = default);
-    Task<IEnumerable<HouseResponse>> GetAssociatedHousesAsync(PostId id, CancellationToken token = default);
-    Task<PostResponse> AddAsync(CreatePostRequest post, CancellationToken token = default);
+    Task<PostResponse> AddAsync(CreatePostRequest postRequest, CancellationToken token = default);
     Task RemoveByIdAsync(PostId id, CancellationToken token = default);
     Task<PostResponse> UpdateAsync(UpdatePostRequest post, CancellationToken token = default);
 }

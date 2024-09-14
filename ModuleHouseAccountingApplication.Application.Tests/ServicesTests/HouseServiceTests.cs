@@ -9,7 +9,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace ModuleHouseAccountingApplication.Application.Tests;
+namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 
 public class HouseServiceTests
 {
