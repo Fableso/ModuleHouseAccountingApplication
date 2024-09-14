@@ -4,6 +4,11 @@ namespace Domain.Entities;
 
 public class HousePost
 {
+    public HousePost(HouseId houseId, PostId postId)
+    {
+        HouseId = houseId;
+        PostId = postId;
+    }
     public HousePostId Id { get; set; }
 
     public HouseId HouseId { get; set; }

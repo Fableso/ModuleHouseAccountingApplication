@@ -2,6 +2,7 @@ using Domain.Common;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
+using FluentResults;
 
 namespace Domain.Entities;
 
@@ -9,7 +10,8 @@ public class House : BaseEntity<HouseId>
 {
     private House()
     {
-        _posts = new List<HousePost>();
+        _housePosts = new List<HousePost>();
+        _houseWeekInfos = new List<HouseWeekInfo>();
     }
     public House(HouseId houseId, HouseMetrics houseMetrics, Point topLeftCornerCoordinates, HouseStatus currentState,
         DateSpan termsAccordingToDocuments, Brigade brigade, DateSpan? realTerms = null) : this()
@@ -46,9 +48,11 @@ public class House : BaseEntity<HouseId>
 
     public string Brigade { get; private set; } = string.Empty;
     
-    public IReadOnlyList<HousePost> Posts => _posts;
+    public IReadOnlyList<HousePost> HousePosts => _housePosts;
+    public IReadOnlyList<HouseWeekInfo> HouseWeekInfos => _houseWeekInfos;
 
-    private List<HousePost> _posts;
+    private List<HousePost> _housePosts;
+    private List<HouseWeekInfo> _houseWeekInfos;
     
     public void ChangeBrigade(Brigade newBrigade)
     {
