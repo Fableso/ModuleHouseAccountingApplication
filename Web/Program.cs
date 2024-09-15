@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseRouting();
 app.MapControllers();
 
