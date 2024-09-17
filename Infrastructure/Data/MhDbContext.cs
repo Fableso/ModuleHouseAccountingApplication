@@ -62,9 +62,9 @@ public class MhDbContext : DbContext, IApplicationDbContext
     private static List<AuditEntry> GetEntityChanges(EntityEntry entityEntry)
     {
         return entityEntry.Properties
-            .Where(property => (property.CurrentValue != null) || 
-                               (property.IsModified && !Equals(property.CurrentValue, property.OriginalValue)) &&
-                               property.Metadata.Name != "Id")
+            .Where(property => property.IsModified && 
+                               property.Metadata.Name != "Id" &&
+                               !Equals(property.CurrentValue, property.OriginalValue))
             .Select(property => new AuditEntry
             {
                 FieldName = property.Metadata.Name,
