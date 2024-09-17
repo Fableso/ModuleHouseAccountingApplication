@@ -160,6 +160,18 @@ public class HouseServiceTests
     }
     
     [Fact]
+    public async Task AddAsync_HouseModelAlreadyExists_ShouldThrowEntityAlreadyExistsException()
+    {
+        // Arrange
+        var createRequest = TestHelper.GetCreateHouseRequest();
+        createRequest.Model = new HouseId("MB 110-1");
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityAlreadyExistsException>(() => _service.AddAsync(createRequest));
+        Assert.Equal("House with model MB 110-1 already exists. The house model must be unique", exception.Message);
+    }
+    
+    [Fact]
     public async Task UpdateAsync_HouseExists_ShouldUpdateHouseAndReturnResponse()
     {
         // Arrange
