@@ -145,7 +145,7 @@ public class HouseServiceTests
         // Assert
         Assert.NotNull(houseResponse);
         Assert.Equal(expectedHouseResponseAmount, await _context.Houses.CountAsync());
-        Assert.Equal(createRequest.Id, houseResponse.Model);
+        Assert.Equal(createRequest.Model, houseResponse.Model);
         Assert.Equal(createRequest.Length, houseResponse.Length);
         Assert.Equal(createRequest.Width, houseResponse.Width);
         Assert.Equal(createRequest.TopLeftCornerX, houseResponse.TopLeftCornerX);
@@ -155,7 +155,7 @@ public class HouseServiceTests
         Assert.Equal(createRequest.Brigade, houseResponse.Brigade);
         Assert.Equal(HouseStatus.Planned, houseResponse.CurrentState);
         _mockHousePostService.Verify(
-            service => service.AddHousePostRelationsAsync(createRequest.Id, createRequest.PostIds, It.IsAny<CancellationToken>()),
+            service => service.AddHousePostRelationsAsync(createRequest.Model, createRequest.PostIds, It.IsAny<CancellationToken>()),
             Times.Once);
     }
     
@@ -170,7 +170,7 @@ public class HouseServiceTests
 
         // Assert
         Assert.NotNull(houseResponse);
-        Assert.Equal(updateRequest.Id, houseResponse.Model);
+        Assert.Equal(updateRequest.Model, houseResponse.Model);
         Assert.Equal(updateRequest.Length, houseResponse.Length);
         Assert.Equal(updateRequest.Width, houseResponse.Width);
         Assert.Equal(updateRequest.TopLeftCornerX, houseResponse.TopLeftCornerX);
@@ -180,7 +180,7 @@ public class HouseServiceTests
         Assert.Equal(updateRequest.Brigade, houseResponse.Brigade);
         Assert.Equal(HouseStatus.Planned, houseResponse.CurrentState);
         _mockHousePostService.Verify(
-            service => service.UpdatePostsForHouseAsync(updateRequest.Id, updateRequest.PostIds, It.IsAny<CancellationToken>()),
+            service => service.UpdatePostsForHouseAsync(updateRequest.Model, updateRequest.PostIds, It.IsAny<CancellationToken>()),
             Times.Once);
     }
     
@@ -189,7 +189,7 @@ public class HouseServiceTests
     {
         // Arrange
         var updateRequest = TestHelper.GetUpdateHouseRequest();
-        updateRequest.Id = new HouseId("NON_EXISTENT_ID");
+        updateRequest.Model = new HouseId("NON_EXISTENT_ID");
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.UpdateAsync(updateRequest));

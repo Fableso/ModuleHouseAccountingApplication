@@ -1,12 +1,21 @@
+using System.Reflection;
 using Application;
+using FluentValidation;
 using Infrastructure;
+using Web.Extensions;
 using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddStronglyTypedIdConversionJsonOptions()
+    .AddCustomModelBinders();
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 

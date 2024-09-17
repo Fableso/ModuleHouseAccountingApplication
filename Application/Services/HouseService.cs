@@ -47,10 +47,10 @@ public class HouseService : IHouseService
 
     public async Task<HouseResponse> UpdateAsync(UpdateHouseRequest houseRequest, CancellationToken token = default)
     {
-        var existingHouse = await FetchHouseById(houseRequest.Id, token);
+        var existingHouse = await FetchHouseById(houseRequest.Model, token);
         if (existingHouse == null)
         {
-            throw new EntityNotFoundException($"House with id {houseRequest.Id.Value} not found");
+            throw new EntityNotFoundException($"House with id {houseRequest.Model.Value} not found");
         }
         var updatedHouse = _mapper.Map(houseRequest, existingHouse);
         await _housePostService.UpdatePostsForHouseAsync(updatedHouse.Id, houseRequest.PostIds, token);

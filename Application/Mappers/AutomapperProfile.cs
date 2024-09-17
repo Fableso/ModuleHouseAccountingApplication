@@ -23,7 +23,7 @@ public class AutomapperProfile : Profile
             .ForMember(hr => hr.Model, h => h.MapFrom(x => x.Id));
 
         CreateMap<CreateHouseRequest, House>()
-            .ConstructUsing(house => new House(house.Id, HouseMetrics.Create(house.Length, house.Width).Value,
+            .ConstructUsing(house => new House(house.Model, HouseMetrics.Create(house.Length, house.Width).Value,
                 new Point(house.TopLeftCornerX, house.TopLeftCornerY), HouseStatus.Planned,
                 DateSpan.Create(house.OfficialStartDate, house.OfficialEndDate).Value,
                 Brigade.Create(house.Brigade).Value, null))
@@ -34,7 +34,7 @@ public class AutomapperProfile : Profile
             .ForMember(h => h.RealStartDate, hr => hr.Ignore());
 
         CreateMap<UpdateHouseRequest, House>()
-            .ConstructUsing(house => new House(house.Id, HouseMetrics.Create(house.Length, house.Width).Value,
+            .ConstructUsing(house => new House(house.Model, HouseMetrics.Create(house.Length, house.Width).Value,
                 new Point(house.TopLeftCornerX, house.TopLeftCornerY),
                 house.CurrentState,
                 DateSpan.Create(house.OfficialStartDate, house.OfficialEndDate).Value,

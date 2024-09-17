@@ -3,13 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Middleware;
 
-public class ExceptionHandlingMiddleware : IMiddleware
+public class ExceptionHandlingMiddleware
 {
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    private readonly RequestDelegate _next;
+    public ExceptionHandlingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await next(context);
+            await _next(context);
         }
         catch (EntityNotFoundException ex)
         {
@@ -23,7 +28,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
-        catch (Exception)
+        catch (Exception e)
         {
             var problemDetails = new ProblemDetails
             {

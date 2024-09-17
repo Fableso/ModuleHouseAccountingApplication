@@ -239,7 +239,7 @@ public static class TestHelper
     
     public static CreateHouseRequest GetCreateHouseRequest() => new()
     {
-        Id = new HouseId("MB 200-1"),
+        Model = new HouseId("MB 200-1"),
         Length = 20.0,
         Width = 30.0,
         TopLeftCornerX = 10,
@@ -252,7 +252,7 @@ public static class TestHelper
     
     public static UpdateHouseRequest GetUpdateHouseRequest() => new()
     {
-        Id = new HouseId("MB 110-1"),
+        Model = new HouseId("MB 110-1"),
         Length = 20.0,
         Width = 30.0,
         TopLeftCornerX = 10,

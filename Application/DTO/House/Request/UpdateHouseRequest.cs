@@ -5,7 +5,7 @@ namespace Application.DTO.House.Request;
 
 public sealed class UpdateHouseRequest
 {
-    public HouseId Id { get; set; }
+    public HouseId Model { get; set; }
     public double Length { get; set; }
     public double Width { get; set; }
     public int TopLeftCornerX { get; set; }
