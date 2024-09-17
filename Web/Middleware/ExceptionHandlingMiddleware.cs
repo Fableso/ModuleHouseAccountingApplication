@@ -28,6 +28,18 @@ public class ExceptionHandlingMiddleware
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
+        catch (EntityAlreadyExistsException ex)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Entity Already Exists",
+                Status = StatusCodes.Status409Conflict,
+                Type = "https://httpstatuses.com/409",
+                Detail = ex.Message
+            };
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
         catch (Exception e)
         {
             var problemDetails = new ProblemDetails

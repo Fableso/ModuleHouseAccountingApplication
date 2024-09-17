@@ -16,17 +16,21 @@ public class HouseMetrics : ValueObject
 
     public static Result<HouseMetrics> Create(double length, double width)
     {
+        var errors = new List<string>();
+
         if (length <= 0)
         {
-            return Result.Fail<HouseMetrics>("Length must be bigger than 0");
+            errors.Add("Length must be bigger than 0.");
         }
 
         if (width <= 0)
         {
-            return Result.Fail<HouseMetrics>("Width must be bigger than 0");
+            errors.Add("Width must be bigger than 0.");
         }
 
-        return Result.Ok(new HouseMetrics(length, width));
+        return errors.Count != 0 ?
+            Result.Fail<HouseMetrics>(errors)
+            : Result.Ok(new HouseMetrics(length, width));
     }
 
     protected override IEnumerable<object> ComparisonProperties()

@@ -38,6 +38,10 @@ public class HouseService : IHouseService
 
     public async Task<HouseResponse> AddAsync(CreateHouseRequest houseRequest, CancellationToken token = default)
     {
+        if (await HouseExistsAsync(houseRequest.Model, token))
+        {
+            throw new EntityAlreadyExistsException($"House with model {houseRequest.Model.Value} already exists. The house model must be unique");
+        }
         var house = _mapper.Map<House>(houseRequest);
         await _housePostService.AddHousePostRelationsAsync(house.Id, houseRequest.PostIds, token);
         await _context.Houses.AddAsync(house, token);
@@ -94,6 +98,11 @@ public class HouseService : IHouseService
             .Include(h => h.HousePosts)
             .ThenInclude(h => h.Post)
             .FirstOrDefaultAsync(h => h.Id == id, token);
+    }
+    
+    private async Task<bool> HouseExistsAsync(HouseId id, CancellationToken token)
+    {
+        return await _context.Houses.AnyAsync(house => house.Id == id, token);
     }
 
 }
