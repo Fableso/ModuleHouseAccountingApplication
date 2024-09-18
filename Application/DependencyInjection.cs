@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<IHouseWeekInfoService, HouseWeekInfoService>();
         services.AddScoped<IWeekMarkService, WeekMarkService>();
+        services.AddScoped<IHistoryService, HistoryService>();
 
         return services;
     }

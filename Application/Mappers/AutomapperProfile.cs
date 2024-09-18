@@ -1,3 +1,4 @@
+using Application.DTO.History.Responses;
 using Application.DTO.House.Request;
 using Application.DTO.House.Response;
 using Application.DTO.HouseWeekInfo.Request;
@@ -74,5 +75,9 @@ public class AutomapperProfile : Profile
                 MarkComment.Create(weekMarkRequest.Comment ?? string.Empty).Value))
             .ForMember(wm => wm.HouseWeekInfo, wm => wm.Ignore());
         CreateMap<WeekMark, WeekMarkResponse>();
+
+        CreateMap<AuditEntry, AuditEntryResponse>();
+        CreateMap<Audit, AuditResponse>()
+            .ForMember(ar => ar.Changes, a => a.MapFrom(x => x.Changes));
     }
 }

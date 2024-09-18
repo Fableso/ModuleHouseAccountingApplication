@@ -11,5 +11,7 @@ public interface IApplicationDbContext
     DbSet<Post> Posts { get; }
     DbSet<HouseWeekInfo> HouseWeekInfos { get; }
     DbSet<WeekMark> WeekMarks { get; }
+    DbSet<Audit> Audits { get; }
+    DbSet<AuditEntry> AuditEntries { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
