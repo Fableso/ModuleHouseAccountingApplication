@@ -24,12 +24,25 @@ public class MhDbContext : DbContext, IApplicationDbContext
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        var entityAuditInformation = TrackChanges();
-        await AddAuditAsync(entityAuditInformation, cancellationToken);
+        await using var transaction = await Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            var entityAuditInformation = TrackChanges();
+            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
 
-        var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        
-        return result;
+            await AddAuditAsync(entityAuditInformation, cancellationToken);
+
+            await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            
+            await transaction.CommitAsync(cancellationToken);
+
+            return result;
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 
     private List<EntityAuditInformation> TrackChanges()

@@ -86,6 +86,8 @@ public class HouseService : IHouseService
             .Where(house =>
                 house.OfficialStartDate >= dateSpan.StartDate &&
                 house.OfficialEndDate <= (dateSpan.EndDate ?? DateOnly.MaxValue))
+            .Include(h => h.HouseWeekInfos)
+            .ThenInclude(hwi => hwi.WeekComments)
             .Include(h => h.HousePosts)
             .ThenInclude(h => h.Post)
             .AsNoTracking()
@@ -95,6 +97,8 @@ public class HouseService : IHouseService
     private async Task<House?> FetchHouseById(HouseId id, CancellationToken token)
     {
         return await _context.Houses
+            .Include(h => h.HouseWeekInfos)
+            .ThenInclude(hwi => hwi.WeekComments)
             .Include(h => h.HousePosts)
             .ThenInclude(h => h.Post)
             .FirstOrDefaultAsync(h => h.Id == id, token);
