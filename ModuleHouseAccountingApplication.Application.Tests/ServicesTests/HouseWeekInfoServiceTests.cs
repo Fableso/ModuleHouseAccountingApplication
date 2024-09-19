@@ -18,9 +18,7 @@ public class HouseWeekInfoServiceTests
     private readonly IHouseWeekInfoService _service;
     public HouseWeekInfoServiceTests()
     {
-        var options = new DbContextOptionsBuilder<MhDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        var options = TestHelper.GetTestDbOptions();
         
         var rawContext = new MhDbContext(options);
 

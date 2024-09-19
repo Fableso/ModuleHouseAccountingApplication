@@ -14,9 +14,7 @@ public class HousePostServiceTests
 
     public HousePostServiceTests()
     {
-        var options = new DbContextOptionsBuilder<MhDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        var options = TestHelper.GetTestDbOptions();
         
         var rawContext = new MhDbContext(options);
 
@@ -34,7 +32,7 @@ public class HousePostServiceTests
         var postIdsToAdd = new List<PostId> { new PostId(1), new PostId(2) };
 
         // Act
-        await _service.AddHousePostRelationsAsync(houseId, postIdsToAdd);
+        await _service.AddHousePostRelationsForNewHouseAsync(houseId, postIdsToAdd);
         await _context.SaveChangesAsync();
 
         // Assert
@@ -52,7 +50,7 @@ public class HousePostServiceTests
         var postIdsToAdd = new List<PostId>();
 
         // Act
-        await _service.AddHousePostRelationsAsync(houseId, postIdsToAdd);
+        await _service.AddHousePostRelationsForNewHouseAsync(houseId, postIdsToAdd);
         await _context.SaveChangesAsync();
 
         // Assert

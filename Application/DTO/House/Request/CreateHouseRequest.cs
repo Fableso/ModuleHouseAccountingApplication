@@ -2,7 +2,7 @@ using Domain.StronglyTypedIds;
 
 namespace Application.DTO.House.Request;
 
-public sealed class CreateHouseRequest
+public sealed class CreateHouseRequest : IHouseRequest
 {
     public HouseId Model { get; set; }
     public double Length { get; set; }

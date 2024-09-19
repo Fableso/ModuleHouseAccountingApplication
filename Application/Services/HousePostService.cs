@@ -14,15 +14,14 @@ public class HousePostService : IHousePostService
         _context = context;
     }
     
-    public async Task AddHousePostRelationsAsync(HouseId houseId, IEnumerable<PostId> postIdsToAdd, CancellationToken token = default)
+    public async Task AddHousePostRelationsForNewHouseAsync(HouseId houseId, IEnumerable<PostId> postIdsToAdd, CancellationToken token = default)
     {
         var idsToAdd = postIdsToAdd.ToList();
-        if (idsToAdd.Count == 0) return;
-
-        var newHousePosts = idsToAdd.Select(postId => new HousePost(houseId, postId));
-        await _context.HousePosts.AddRangeAsync(newHousePosts, token);
+        await ValidatePostsExistAsync(idsToAdd, token);
+        await AddHousePostRelationsAsync(houseId, idsToAdd, token);
     }
-    
+
+
     public async Task UpdatePostsForHouseAsync(HouseId houseId, IEnumerable<PostId> newPostIds, CancellationToken token = default)
     {
         await ValidateHouseExistsAsync(houseId, token);
@@ -36,6 +35,13 @@ public class HousePostService : IHousePostService
 
         await AddHousePostRelationsAsync(houseId, postIdsToAdd, token);
         await RemoveHousePostRelationsAsync(houseId, postIdsToRemove, token);
+    }
+    private async Task AddHousePostRelationsAsync(HouseId houseId, List<PostId> idsToAdd, CancellationToken token = default)
+    {
+        if (idsToAdd.Count == 0) return;
+
+        var newHousePosts = idsToAdd.Select(postId => new HousePost(houseId, postId));
+        await _context.HousePosts.AddRangeAsync(newHousePosts, token);
     }
     
     private async Task ValidateHouseExistsAsync(HouseId houseId, CancellationToken token)

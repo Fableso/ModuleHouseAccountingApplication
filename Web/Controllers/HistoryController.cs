@@ -26,4 +26,28 @@ public class HistoryController : ControllerBase
 
         return Ok(audits);
     }
+    
+    [HttpGet("house-main/{houseId}")]
+    public async Task<IActionResult> GetMainHouseHistoryLogByIdAsync([FromRoute] HouseId houseId, CancellationToken token = default)
+    {
+        var audits = await _historyService.GetMainHouseHistoryLogByIdAsync(houseId, token);
+        if (!audits.Any())
+        {
+            return NotFound("No records found for the provided house");
+        }
+
+        return Ok(audits);
+    }
+    
+    [HttpGet("house-week/{houseWeekInfoId}")]
+    public async Task<IActionResult> GetHouseWeekHistoryLogByIdAsync([FromRoute] HouseWeekInfoId houseWeekInfoId, CancellationToken token = default)
+    {
+        var audits = await _historyService.GetHouseWeekHistoryLogByIdAsync(houseWeekInfoId, token);
+        if (!audits.Any())
+        {
+            return NotFound("No records found for the provided house week info");
+        }
+
+        return Ok(audits);
+    }
 }

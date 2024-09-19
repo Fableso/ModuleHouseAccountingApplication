@@ -43,7 +43,7 @@ public class HouseService : IHouseService
             throw new EntityAlreadyExistsException($"House with model {houseRequest.Model.Value} already exists. The house model must be unique");
         }
         var house = _mapper.Map<House>(houseRequest);
-        await _housePostService.AddHousePostRelationsAsync(house.Id, houseRequest.PostIds, token);
+        await _housePostService.AddHousePostRelationsForNewHouseAsync(house.Id, houseRequest.PostIds, token);
         await _context.Houses.AddAsync(house, token);
         await _context.SaveChangesAsync(token);
         return _mapper.Map<HouseResponse>(house);

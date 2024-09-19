@@ -6,6 +6,7 @@ using Application.Exceptions;
 using AutoMapper;
 using Domain.Entities;
 using Domain.StronglyTypedIds;
+using Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
@@ -35,6 +36,10 @@ public class PostService : IPostService
 
     public async Task<PostResponse> AddAsync(CreatePostRequest postRequest, CancellationToken token = default)
     {
+        if (await PostNameExists(postRequest.Name, token))
+        {
+            throw new EntityAlreadyExistsException("Post with the same name already exists. Post names must be unique");
+        }
         var post = _mapper.Map<Post>(postRequest);
         await _context.Posts.AddAsync(post, token);
         await _context.SaveChangesAsync(token);
@@ -59,9 +64,20 @@ public class PostService : IPostService
         {
             throw new EntityNotFoundException($"Post with ID {post.Id.Value} not found");
         }
+
+        if (await PostNameExists(post.Name, token) && existingPost.Name != post.Name)
+        {
+            throw new EntityAlreadyExistsException("Post with the same name already exists. Post names must be unique");
+        }
+        
         var updatedPost = _mapper.Map(post, existingPost);
         _context.Posts.Update(updatedPost);
         await _context.SaveChangesAsync(token);
         return _mapper.Map<PostResponse>(updatedPost);
+    }
+    
+    private async Task<bool> PostNameExists(string name, CancellationToken token = default)
+    {
+        return await _context.Posts.AnyAsync(e => e.Name == name, token);
     }
 }

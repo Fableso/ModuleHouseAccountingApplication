@@ -14,11 +14,23 @@ using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ModuleHouseAccountingApplication.Application.Tests;
 
 public static class TestHelper
 {
+    public static DbContextOptions<MhDbContext> GetTestDbOptions()
+    {
+        var options = new DbContextOptionsBuilder<MhDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .ConfigureWarnings(warnings => warnings
+                .Ignore(InMemoryEventId.TransactionIgnoredWarning))
+            .Options;
+
+        return options;
+    }
     public static IMapper CreateMapperProfile()
     {
         var myProfile = new AutomapperProfile();

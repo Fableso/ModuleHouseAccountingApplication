@@ -16,9 +16,7 @@ public class WeekMarkServiceTests
     private readonly IWeekMarkService _service;
     public WeekMarkServiceTests()
     {
-        var options = new DbContextOptionsBuilder<MhDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        var options = TestHelper.GetTestDbOptions();
         
         var rawContext = new MhDbContext(options);
 

@@ -20,9 +20,7 @@ public class HouseServiceTests
 
     public HouseServiceTests()
     {
-        var options = new DbContextOptionsBuilder<MhDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        var options = TestHelper.GetTestDbOptions();
         
         var rawContext = new MhDbContext(options);
 
@@ -155,7 +153,7 @@ public class HouseServiceTests
         Assert.Equal(createRequest.Brigade, houseResponse.Brigade);
         Assert.Equal(HouseStatus.Planned, houseResponse.CurrentState);
         _mockHousePostService.Verify(
-            service => service.AddHousePostRelationsAsync(createRequest.Model, createRequest.PostIds, It.IsAny<CancellationToken>()),
+            service => service.AddHousePostRelationsForNewHouseAsync(createRequest.Model, createRequest.PostIds, It.IsAny<CancellationToken>()),
             Times.Once);
     }
     

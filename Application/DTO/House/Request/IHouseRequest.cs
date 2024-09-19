@@ -1,9 +1,8 @@
-using Domain.Enums;
 using Domain.StronglyTypedIds;
 
 namespace Application.DTO.House.Request;
 
-public sealed class UpdateHouseRequest : IHouseRequest
+public interface IHouseRequest
 {
     public HouseId Model { get; set; }
     public double Length { get; set; }
@@ -12,9 +11,6 @@ public sealed class UpdateHouseRequest : IHouseRequest
     public int TopLeftCornerY { get; set; }
     public DateOnly OfficialStartDate { get; set; }
     public DateOnly? OfficialEndDate { get; set; }
-    public string Brigade { get; set; } = string.Empty;
-    public HouseStatus CurrentState { get; set; }
-    public DateOnly RealStartDate { get; set; }
-    public DateOnly? RealEndDate { get; set; }
-    public List<PostId> PostIds { get; set; } = [];
+    public string Brigade { get; set; }
+    public List<PostId> PostIds { get; set; }
 }

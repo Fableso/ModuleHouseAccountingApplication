@@ -4,6 +4,7 @@ using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Web.Validation.Extensions;
 
 namespace Web.Controllers;
 
@@ -53,7 +54,7 @@ public class HouseController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            var errors = GetValidationErrors();
+            var errors = ModelState.GetValidationErrors();
             return BadRequest(errors);
         }
         var house = await _houseService.AddAsync(houseRequest, token);
@@ -65,7 +66,7 @@ public class HouseController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            var errors = GetValidationErrors();
+            var errors = ModelState.GetValidationErrors();
 
             return BadRequest(errors);
         }
@@ -79,14 +80,5 @@ public class HouseController : ControllerBase
     {
         await _houseService.RemoveByIdAsync(model, token);
         return NoContent();
-    }
-    private List<string> GetValidationErrors()
-    {
-        var errors = ModelState.Values
-            .SelectMany(v => v.Errors)
-            .Select(v => v.ErrorMessage)
-            .ToList();
-
-        return errors;
     }
 }

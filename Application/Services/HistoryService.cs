@@ -27,6 +27,13 @@ public class HistoryService : IHistoryService
         return _mapper.Map<IEnumerable<AuditResponse>>(houseAudits);
     }
 
+    public async Task<IEnumerable<AuditResponse>> GetHouseWeekHistoryLogByIdAsync(HouseWeekInfoId houseWeekInfoId, CancellationToken token = default)
+    {
+        var weekInfoAuditLogs= await GetHouseWeekInfoHistoryLogs(houseWeekInfoId, token);
+        return _mapper.Map<IEnumerable<AuditResponse>>(weekInfoAuditLogs);
+    }
+
+
     public async Task<IEnumerable<AuditResponse>> GetFullHouseHistoryLogByIdAsync(
         HouseId houseId, CancellationToken token = default)
     {
@@ -64,6 +71,28 @@ public class HistoryService : IHistoryService
             .Concat(housePostsAudits);
 
         return _mapper.Map<IEnumerable<AuditResponse>>(allAudits);
+    }
+    private async Task<IEnumerable<Audit>> GetHouseWeekInfoHistoryLogs(HouseWeekInfoId houseWeekInfoId, CancellationToken token)
+    {
+        var houseWeekInfo = await _context.HouseWeekInfos
+            .AsNoTracking()
+            .Include(hwi => hwi.WeekComments)
+            .FirstOrDefaultAsync(hwi => hwi.Id == houseWeekInfoId, token);
+        
+        if (houseWeekInfo == null)
+        {
+            throw new EntityNotFoundException($"House week info with id {houseWeekInfoId.Value} not found");
+        }
+        
+        
+        var weekLogs = await GetRecordsLogsAsync(
+            new[] { houseWeekInfoId.ToString() }, nameof(_context.HouseWeekInfos), token);
+        
+        var weekCommentIds = houseWeekInfo.WeekComments.Select(wc => wc.Id.ToString());
+        var weekCommentLogs = await GetRecordsLogsAsync(
+            weekCommentIds, nameof(_context.WeekMarks), token);
+        
+        return weekLogs.Concat(weekCommentLogs);
     }
 
     private async Task<IEnumerable<Audit>> GetMainHouseLogs(

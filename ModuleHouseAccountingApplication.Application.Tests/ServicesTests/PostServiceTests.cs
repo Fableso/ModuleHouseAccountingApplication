@@ -18,9 +18,7 @@ public class PostServiceTests
 
     public PostServiceTests()
     {
-        var options = new DbContextOptionsBuilder<MhDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
-            .Options;
+        var options = TestHelper.GetTestDbOptions();
         
         var rawContext = new MhDbContext(options);
 
@@ -78,7 +76,19 @@ public class PostServiceTests
     }
     
     [Fact]
-    public async Task UpdateAsync_PostExists_ShouldUpdatePostInDatabase()
+    public async Task AddAsync_PostNameExists_ShouldThrowException()
+    {
+        // Arrange
+        var postRequest = TestHelper.GetCreatePostRequest();
+        postRequest.Name = (await _context.Posts.FirstOrDefaultAsync())!.Name;
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityAlreadyExistsException>(() => _service.AddAsync(postRequest));
+        Assert.Equal("Post with the same name already exists. Post names must be unique", exception.Message);
+    }
+    
+    [Fact]
+    public async Task UpdateAsync_PostAlreadyExists_ShouldUpdatePostInDatabase()
     {
         // Arrange
         var postRequest = TestHelper.GetUpdatePostRequest();
