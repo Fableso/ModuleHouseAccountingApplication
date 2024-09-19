@@ -5,6 +5,7 @@ using FluentValidation.AspNetCore;
 using Infrastructure;
 using Web.Extensions;
 using Web.Middleware;
+using Web.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,7 @@ builder.Services.AddControllers()
     .AddStronglyTypedIdConversionJsonOptions()
     .AddCustomModelBinders();
 
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidation();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
