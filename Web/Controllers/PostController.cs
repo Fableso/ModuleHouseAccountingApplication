@@ -52,4 +52,23 @@ public class PostController : ControllerBase
         var post = await _postService.AddAsync(postRequest, token);
         return CreatedAtAction("GetPostById", new { id = post.Id }, post);
     }
+    
+    [HttpPut]
+    public async Task<IActionResult> UpdatePostAsync([FromBody] UpdatePostRequest postRequest, CancellationToken token = default)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.GetValidationErrors();
+            return BadRequest(errors);
+        }
+        var post = await _postService.UpdateAsync(postRequest, token);
+        return Ok(post);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> RemovePostByIdAsync([FromRoute] PostId id, CancellationToken token = default)
+    {
+        await _postService.RemoveByIdAsync(id, token);
+        return NoContent();
+    }
 }
