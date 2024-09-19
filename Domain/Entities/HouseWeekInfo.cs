@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
+using Domain.ValueObjects;
 using FluentResults;
 
 namespace Domain.Entities;
@@ -12,10 +13,10 @@ public class HouseWeekInfo : BaseEntity<HouseWeekInfoId>
         _weekComments = new List<WeekMark>();
     }
 
-    public HouseWeekInfo(HouseId houseId, DateOnly startDate, WeekStatus status, bool onTime) : this()
+    public HouseWeekInfo(HouseId houseId, WeekStartDate startDate, WeekStatus status, bool onTime) : this()
     {
         HouseId = houseId;
-        StartDate = startDate;
+        StartDate = startDate.Value;
         Status = status;
         OnTime = onTime;
     }

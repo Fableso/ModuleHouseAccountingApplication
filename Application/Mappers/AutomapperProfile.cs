@@ -44,23 +44,33 @@ public class AutomapperProfile : Profile
             .ForMember(h => h.HouseWeekInfos, hr => hr.Ignore());
 
         CreateMap<Post, PostResponse>();
+        
         CreateMap<CreatePostRequest, Post>()
             .ConstructUsing(post => new Post(PostName.Create(post.Name).Value))
             .ForMember(p => p.Id, pr => pr.Ignore())
             .ForMember(p => p.Houses, pr => pr.Ignore());
+        
         CreateMap<UpdatePostRequest, Post>()
             .ConstructUsing(post => new Post(PostName.Create(post.Name).Value))
             .ForMember(p => p.Houses, pr => pr.Ignore());
 
         CreateMap<HouseWeekInfo, HouseWeekInfoResponse>()
             .ForMember(hwir => hwir.WeekMarkResponses, hwi => hwi.MapFrom(x => x.WeekComments));
+        
         CreateMap<CreateHouseWeekInfoRequest, HouseWeekInfo>()
+            .ConstructUsing(houseWeekInfoRequest => new HouseWeekInfo(
+                houseWeekInfoRequest.HouseId,
+                WeekStartDate.Create(houseWeekInfoRequest.StartDate).Value,
+                houseWeekInfoRequest.Status,
+                houseWeekInfoRequest.OnTime))
             .ForMember(hwi => hwi.Id, hwi => hwi.Ignore())
             .ForMember(hwi => hwi.House, hwi => hwi.Ignore())
             .ForMember(hwi => hwi.WeekComments, hwi => hwi.Ignore());
+        
         CreateMap<UpdateHouseWeekInfoRequest, HouseWeekInfo>()
             .ForMember(hwi => hwi.House, hwi => hwi.Ignore())
             .ForMember(hwi => hwi.WeekComments, hwi => hwi.Ignore());
+        
         CreateMap<CreateWeekMarkRequest, WeekMark>()
             .ConstructUsing(weekMarkRequest => new WeekMark(
                 weekMarkRequest.HouseWeekInfoId,
@@ -68,15 +78,18 @@ public class AutomapperProfile : Profile
                 MarkComment.Create(weekMarkRequest.Comment ?? string.Empty).Value))
             .ForMember(wm => wm.HouseWeekInfo, wm => wm.Ignore())
             .ForMember(wm => wm.Id, wm => wm.Ignore());
+        
         CreateMap<UpdateWeekMarkRequest, WeekMark>()
             .ConstructUsing(weekMarkRequest => new WeekMark(
                 weekMarkRequest.HouseWeekInfoId,
                 weekMarkRequest.MarkType,
                 MarkComment.Create(weekMarkRequest.Comment ?? string.Empty).Value))
             .ForMember(wm => wm.HouseWeekInfo, wm => wm.Ignore());
+        
         CreateMap<WeekMark, WeekMarkResponse>();
 
         CreateMap<AuditEntry, AuditEntryResponse>();
+        
         CreateMap<Audit, AuditResponse>()
             .ForMember(ar => ar.Changes, a => a.MapFrom(x => x.Changes));
     }

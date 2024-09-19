@@ -75,14 +75,14 @@ public static class TestHelper
             new HousePost(house3.Id, post1.Id)
         );
 
-        var houseWeekInfo1 = new HouseWeekInfo(house1.Id, new DateOnly(2024, 8, 1), WeekStatus.InProcess, true);
-        var houseWeekInfo2 = new HouseWeekInfo(house1.Id, new DateOnly(2024, 8, 8), WeekStatus.OnHold, true);
-        var houseWeekInfo3 = new HouseWeekInfo(house1.Id, new DateOnly(2024, 8, 15), WeekStatus.OnHold, false);
-        var houseWeekInfo4 = new HouseWeekInfo(house2.Id, new DateOnly(2023, 9, 8), WeekStatus.InProcess, false);
-        var houseWeekInfo5 = new HouseWeekInfo(house2.Id, new DateOnly(2023, 9, 15), WeekStatus.InProcess, true);
-        var houseWeekInfo6 = new HouseWeekInfo(house3.Id, new DateOnly(2025, 8, 20), WeekStatus.OnHold, false);
-        var houseWeekInfo7 = new HouseWeekInfo(house3.Id, new DateOnly(2025, 8, 27), WeekStatus.OnHold, true);
-        var houseWeekInfo8 = new HouseWeekInfo(house3.Id, new DateOnly(2025, 9, 5), WeekStatus.OnHold, false);
+        var houseWeekInfo1 = new HouseWeekInfo(house1.Id, WeekStartDate.Create(new DateOnly(2024, 8, 1)).Value, WeekStatus.InProcess, true);
+        var houseWeekInfo2 = new HouseWeekInfo(house1.Id, WeekStartDate.Create(new DateOnly(2024, 8, 8)).Value, WeekStatus.OnHold, true);
+        var houseWeekInfo3 = new HouseWeekInfo(house1.Id, WeekStartDate.Create(new DateOnly(2024, 8, 15)).Value, WeekStatus.OnHold, false);
+        var houseWeekInfo4 = new HouseWeekInfo(house2.Id, WeekStartDate.Create(new DateOnly(2023, 9, 8)).Value, WeekStatus.InProcess, false);
+        var houseWeekInfo5 = new HouseWeekInfo(house2.Id, WeekStartDate.Create(new DateOnly(2023, 9, 15)).Value, WeekStatus.InProcess, true);
+        var houseWeekInfo6 = new HouseWeekInfo(house3.Id, WeekStartDate.Create(new DateOnly(2025, 8, 20)).Value, WeekStatus.OnHold, false);
+        var houseWeekInfo7 = new HouseWeekInfo(house3.Id, WeekStartDate.Create(new DateOnly(2025, 8, 27)).Value, WeekStatus.OnHold, true);
+        var houseWeekInfo8 = new HouseWeekInfo(house3.Id, WeekStartDate.Create(new DateOnly(2025, 9, 5)).Value, WeekStatus.OnHold, false);
 
         context.HouseWeekInfos.AddRange(
             houseWeekInfo1, houseWeekInfo2, houseWeekInfo3, houseWeekInfo4, houseWeekInfo5, houseWeekInfo6,

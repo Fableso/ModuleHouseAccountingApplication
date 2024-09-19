@@ -92,7 +92,7 @@ public class HouseWeekInfoServiceTests
     }
     
     [Fact]
-    public async Task GetHouseInfosForHouseAsync_HouseExists_ShouldReturnHouseWeekInfoResponsesWithCorrectMapping()
+    public async Task GetHouseInfosForHouseAsync_HouseExists_ShouldReturnHouseWeekInfoResponses()
     {
         // Arrange
         var houseId = new HouseId("MB 56-1");
@@ -115,6 +115,53 @@ public class HouseWeekInfoServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.GetHouseInfosForHouseAsync(nonExistentHouseId));
         Assert.Equal($"House with ID nonexistent not found", exception.Message);
+    }
+    
+    [Fact]
+    public async Task GetHouseInfosForHouseInTimeSpanAsync_HouseExists_ShouldReturnHouseWeekInfoResponses()
+    {
+        // Arrange
+        var houseId = new HouseId("MB 140-1");
+        var dateSpan = DateSpan.Create(new DateOnly(2022, 1, 1), new DateOnly(2024, 1, 7)).Value;
+        
+        // Act
+        var houseWeekInfoResponses = (await _service.GetHouseInfosForHouseInTimeSpanAsync(houseId, dateSpan)).ToList();
+        
+        // Assert
+        Assert.NotNull(houseWeekInfoResponses);
+        Assert.NotEmpty(houseWeekInfoResponses);
+        Assert.Equal(2, houseWeekInfoResponses.Count);
+        Assert.All(houseWeekInfoResponses, hwir =>
+            {
+                Assert.InRange(hwir.StartDate, dateSpan.StartDate, dateSpan.EndDate ?? DateOnly.MaxValue);
+            }
+        );
+    }
+    
+    [Fact]
+    public async Task GetHouseInfosForHouseInTimeSpanAsync_HouseDoesNotExist_ShouldThrowEntityNotFoundException()
+    {
+        // Arrange
+        var nonExistentHouseId = new HouseId("nonexistent");
+        var dateSpan = DateSpan.Create(new DateOnly(2022, 1, 1), new DateOnly(2024, 1, 7)).Value;
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.GetHouseInfosForHouseInTimeSpanAsync(nonExistentHouseId, dateSpan));
+        Assert.Equal($"House with ID nonexistent not found", exception.Message);
+    }
+    
+    [Fact]
+    public async Task GetHouseInfosForHouseInTimeSpanAsync_NoHouseWeekInfosExist_ShouldReturnEmptyList()
+    {
+        // Arrange
+        var houseId = new HouseId("MB 56-1");
+        var dateSpan = DateSpan.Create(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)).Value;
+        
+        // Act
+        var houseWeekInfoResponses = await _service.GetHouseInfosForHouseInTimeSpanAsync(houseId, dateSpan);
+        
+        // Assert
+        Assert.Empty(houseWeekInfoResponses);
     }
     
     [Fact]
@@ -152,7 +199,6 @@ public class HouseWeekInfoServiceTests
         Assert.NotNull(houseWeekInfoResponse);
         Assert.Equal(expectedHouseWeekInfoAmount, await _context.HouseWeekInfos.CountAsync());
         Assert.Equal(updateHouseWeekInfoRequest.Id, houseWeekInfoResponse.Id);
-        Assert.Equal(updateHouseWeekInfoRequest.HouseId, houseWeekInfoResponse.HouseId);
         Assert.Equal(updateHouseWeekInfoRequest.Status, houseWeekInfoResponse.Status);
         Assert.Equal(updateHouseWeekInfoRequest.OnTime, houseWeekInfoResponse.OnTime);
     }

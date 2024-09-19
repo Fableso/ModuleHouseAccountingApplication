@@ -35,12 +35,17 @@ public class HouseWeekInfoService : IHouseWeekInfoService
 
     public async Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosForHouseAsync(HouseId houseId, CancellationToken token = default)
     {
-        var house = await _context.Houses.FindAsync(houseId);
-        if (house is null)
-        {
-            throw new EntityNotFoundException($"House with ID {houseId.Value} not found");
-        }
+        await ThrowEntityNotFoundExceptionIfHouseDoesNotExist(houseId);
         var houseWeekInfos = await FetchHouseWeekInfosForHouseAsync(houseId, token);
+        return _mapper.Map<IEnumerable<HouseWeekInfoResponse>>(houseWeekInfos);
+    }
+
+
+    public async Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosForHouseInTimeSpanAsync(HouseId houseId, DateSpan dateSpan,
+        CancellationToken token = default)
+    {
+        await ThrowEntityNotFoundExceptionIfHouseDoesNotExist(houseId);
+        var houseWeekInfos = await FetchHouseWeekInfosForHouseInDateRangeAsync(houseId, dateSpan, token);
         return _mapper.Map<IEnumerable<HouseWeekInfoResponse>>(houseWeekInfos);
     }
 
@@ -76,20 +81,42 @@ public class HouseWeekInfoService : IHouseWeekInfoService
         return _mapper.Map<HouseWeekInfoResponse>(updatedHouseWeekInfo);
     }
 
-    private async Task<List<HouseWeekInfo>> FetchHouseInfosInDateRangeAsync(DateSpan dateSpan, CancellationToken token = default)
+    private async Task ThrowEntityNotFoundExceptionIfHouseDoesNotExist(HouseId houseId)
+    {
+        var house = await _context.Houses.FindAsync(houseId);
+        if (house is null)
+        {
+            throw new EntityNotFoundException($"House with ID {houseId.Value} not found");
+        }
+    }
+    private async Task<IEnumerable<HouseWeekInfo>> FetchHouseInfosInDateRangeAsync(DateSpan dateSpan,
+        CancellationToken token = default)
     {
         return await _context.HouseWeekInfos
             .Where(
-                info => info.StartDate >= dateSpan.StartDate && info.StartDate <= (dateSpan.EndDate ?? DateOnly.MaxValue))
+                info => info.StartDate >= dateSpan.StartDate &&
+                        info.StartDate <= (dateSpan.EndDate ?? DateOnly.MaxValue))
             .Include(hwi => hwi.WeekComments)
             .AsNoTracking()
             .ToListAsync(token);
     }
     
-    private async Task<List<HouseWeekInfo>> FetchHouseWeekInfosForHouseAsync(HouseId houseId, CancellationToken token = default)
+    private async Task<IEnumerable<HouseWeekInfo>> FetchHouseWeekInfosForHouseAsync(HouseId houseId, CancellationToken token = default)
     {
         return await _context.HouseWeekInfos
             .Where(info => info.HouseId == houseId)
+            .Include(hwi => hwi.WeekComments)
+            .AsNoTracking()
+            .ToListAsync(token);
+    }
+    
+    private async Task<IEnumerable<HouseWeekInfo>> FetchHouseWeekInfosForHouseInDateRangeAsync(HouseId houseId, DateSpan dateSpan,
+        CancellationToken token = default)
+    {
+        return await _context.HouseWeekInfos
+            .Where(info => info.HouseId == houseId &&
+                           info.StartDate >= dateSpan.StartDate &&
+                           info.StartDate <= (dateSpan.EndDate ?? DateOnly.MaxValue))
             .Include(hwi => hwi.WeekComments)
             .AsNoTracking()
             .ToListAsync(token);
