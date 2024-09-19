@@ -16,7 +16,7 @@ public class HouseWeekInfo : BaseEntity<HouseWeekInfoId>
     public HouseWeekInfo(HouseId houseId, WeekStartDate startDate, WeekStatus status, bool onTime) : this()
     {
         HouseId = houseId;
-        StartDate = startDate.Value;
+        StartDate = startDate.Date;
         Status = status;
         OnTime = onTime;
     }

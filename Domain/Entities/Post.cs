@@ -17,11 +17,11 @@ public class Post : BaseEntity<PostId>
 
     public string Name { get; private set; } = string.Empty;
 
-    private double? _area;
-    public double? Area
+    private double _area;
+    public double Area
     {
         get => _area;
-        set => _area = value < 0 ? null : value;
+        set => _area = value < 0 ? 0 : value;
     }
     
     public IReadOnlyList<HousePost> Houses => _houses;

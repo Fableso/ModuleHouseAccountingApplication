@@ -239,7 +239,7 @@ public static class TestHelper
         {
             Id = new PostId(2),
             Name = "SecondPost",
-            Area = null
+            Area = 0
         };
         yield return new PostResponse
         {

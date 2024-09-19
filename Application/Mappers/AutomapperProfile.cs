@@ -80,10 +80,8 @@ public class AutomapperProfile : Profile
             .ForMember(wm => wm.Id, wm => wm.Ignore());
         
         CreateMap<UpdateWeekMarkRequest, WeekMark>()
-            .ConstructUsing(weekMarkRequest => new WeekMark(
-                weekMarkRequest.HouseWeekInfoId,
-                weekMarkRequest.MarkType,
-                MarkComment.Create(weekMarkRequest.Comment ?? string.Empty).Value))
+            .ForMember(wm => wm.Comment, request => request.MapFrom(weekMarkRequest => 
+                MarkComment.Create(weekMarkRequest.Comment ?? string.Empty).Value.Value))
             .ForMember(wm => wm.HouseWeekInfo, wm => wm.Ignore());
         
         CreateMap<WeekMark, WeekMarkResponse>();

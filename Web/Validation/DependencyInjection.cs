@@ -3,11 +3,13 @@ using Application.DTO.House.Request;
 using Application.DTO.HouseWeekInfo.Request;
 using Application.DTO.HouseWeekInfo.Response;
 using Application.DTO.Post.Request;
+using Application.DTO.WeekMark.Request;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Web.Validation.House;
 using Web.Validation.HouseWeekInfo;
 using Web.Validation.Post;
+using Web.Validation.WeekMark;
 
 namespace Web.Validation;
 
@@ -25,6 +27,9 @@ public static class DependencyInjection
 
         services.AddTransient<IValidator<CreateHouseWeekInfoRequest>, CreateHouseInfoRequestValidator>();
         services.AddTransient<IValidator<UpdateHouseWeekInfoRequest>, HouseWeekInfoRequestValidator>();
+
+        services.AddTransient<IValidator<CreateWeekMarkRequest>, WeekMarkValidator>();
+        services.AddTransient<IValidator<UpdateWeekMarkRequest>, WeekMarkValidator>();
 
         return services;
     }

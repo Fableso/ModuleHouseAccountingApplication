@@ -5,11 +5,11 @@ namespace Domain.ValueObjects;
 
 public class WeekStartDate : ValueObject
 {
-    private WeekStartDate(DateOnly value)
+    private WeekStartDate(DateOnly date)
     {
-        Value = value;
+        Date = date;
     }
-    public DateOnly Value { get; }
+    public DateOnly Date { get; }
     
     public static Result<WeekStartDate> Create(DateOnly weekStartDate)
     {
@@ -22,6 +22,6 @@ public class WeekStartDate : ValueObject
     
     protected override IEnumerable<object?> ComparisonProperties()
     {
-        yield return Value;
+        yield return Date;
     }
 }

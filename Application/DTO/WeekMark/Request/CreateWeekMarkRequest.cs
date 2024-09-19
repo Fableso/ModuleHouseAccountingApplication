@@ -3,7 +3,7 @@ using Domain.StronglyTypedIds;
 
 namespace Application.DTO.WeekMark.Request;
 
-public sealed class CreateWeekMarkRequest
+public sealed class CreateWeekMarkRequest : IWeekMarkRequest
 {
     public HouseWeekInfoId HouseWeekInfoId { get; set; }
     
