@@ -4,6 +4,7 @@ using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ModuleHouseAccountingApplication.Infrastructure.Tests;
@@ -16,7 +17,8 @@ public class AuditSystemTests
     {
         var services = new ServiceCollection();
         services.AddDbContext<MhDbContext>(options =>
-            options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
+            options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
         
         _serviceProvider = services.BuildServiceProvider();
     }
