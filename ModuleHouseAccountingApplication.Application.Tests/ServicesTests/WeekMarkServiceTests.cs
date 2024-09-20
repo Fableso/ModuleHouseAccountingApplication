@@ -67,6 +67,8 @@ public class WeekMarkServiceTests
     {
         // Arrange
         var weekMarkRequest = TestHelper.GetCreateWeekMarkRequest();
+        var houseWeekInfo = await _context.HouseWeekInfos.FirstAsync();
+        weekMarkRequest.HouseWeekInfoId = houseWeekInfo.Id;
         var expectedWeekMarksAmount = await _context.WeekMarks.CountAsync() + 1;
         
         // Act
@@ -77,6 +79,18 @@ public class WeekMarkServiceTests
         Assert.Equal(expectedWeekMarksAmount, await _context.WeekMarks.CountAsync());
         Assert.Equal(weekMarkRequest.Comment, weekMarkResponse.Comment);
         Assert.Equal(weekMarkRequest.MarkType, weekMarkResponse.MarkType);
+    }
+    
+    [Fact]
+    public async Task AddAsync_HouseWeekInfoDoesNotExist_ShouldThrowEntityNotFoundException()
+    {
+        // Arrange
+        var weekMarkRequest = TestHelper.GetCreateWeekMarkRequest();
+        weekMarkRequest.HouseWeekInfoId = new HouseWeekInfoId(long.MaxValue);
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.AddAsync(weekMarkRequest));
+        Assert.Equal($"HouseWeekInfo with ID {weekMarkRequest.HouseWeekInfoId.Value} not found", exception.Message);
     }
     
     [Fact]

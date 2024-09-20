@@ -1,7 +1,4 @@
-using System.Reflection;
 using Application;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Infrastructure;
 using Web.Extensions;
 using Web.Middleware;

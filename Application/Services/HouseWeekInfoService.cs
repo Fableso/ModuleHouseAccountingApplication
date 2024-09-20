@@ -51,6 +51,10 @@ public class HouseWeekInfoService : IHouseWeekInfoService
 
     public async Task<HouseWeekInfoResponse> AddAsync(CreateHouseWeekInfoRequest request, CancellationToken token = default)
     {
+        if (!await _context.Houses.AnyAsync(h => h.Id == request.HouseId, token))
+        {
+            throw new EntityNotFoundException($"House with ID {request.HouseId.Value} not found");
+        }
         var houseWeekInfo = _mapper.Map<HouseWeekInfo>(request);
         await _context.HouseWeekInfos.AddAsync(houseWeekInfo, token);
         await _context.SaveChangesAsync(token);

@@ -1,7 +1,6 @@
 using System.Reflection;
 using Application.DTO.House.Request;
 using Application.DTO.HouseWeekInfo.Request;
-using Application.DTO.HouseWeekInfo.Response;
 using Application.DTO.Post.Request;
 using Application.DTO.WeekMark.Request;
 using FluentValidation;

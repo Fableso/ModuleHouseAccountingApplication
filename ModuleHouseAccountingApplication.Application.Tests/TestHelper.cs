@@ -305,7 +305,6 @@ public static class TestHelper
     
     public static CreateWeekMarkRequest GetCreateWeekMarkRequest() => new()
     {
-        HouseWeekInfoId = new HouseWeekInfoId(1),
         MarkType = MarkType.BlueMark,
         Comment = "Test comment"
     };

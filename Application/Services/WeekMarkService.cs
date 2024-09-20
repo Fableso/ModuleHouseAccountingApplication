@@ -20,7 +20,7 @@ public class WeekMarkService : IWeekMarkService
         _mapper = mapper;
     }
     
-    public async Task<WeekMarkResponse> GetByIdAsync(WeekMarkId id, CancellationToken token = default)
+    public async Task<WeekMarkResponse?> GetByIdAsync(WeekMarkId id, CancellationToken token = default)
     {
         var weekMark = await _context.WeekMarks.FindAsync(id, token);
         return _mapper.Map<WeekMarkResponse>(weekMark);
@@ -35,6 +35,10 @@ public class WeekMarkService : IWeekMarkService
 
     public async Task<WeekMarkResponse> AddAsync(CreateWeekMarkRequest request, CancellationToken token = default)
     {
+        if (!await _context.HouseWeekInfos.AnyAsync(h => h.Id == request.HouseWeekInfoId, token))
+        {
+            throw new EntityNotFoundException($"HouseWeekInfo with ID {request.HouseWeekInfoId.Value} not found");
+        }
         var weekMark = _mapper.Map<WeekMark>(request);
         _context.WeekMarks.Add(weekMark);
         await _context.SaveChangesAsync(token);

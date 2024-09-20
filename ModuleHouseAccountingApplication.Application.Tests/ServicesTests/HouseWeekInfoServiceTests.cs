@@ -184,6 +184,18 @@ public class HouseWeekInfoServiceTests
     }
     
     [Fact]
+    public async Task AddAsync_HouseDoesNotExist_ShouldThrowEntityNotFoundException()
+    {
+        // Arrange
+        var createHouseWeekInfoRequest = TestHelper.GetCreateHouseWeekInfoRequest();
+        createHouseWeekInfoRequest.HouseId = new HouseId("nonexistent");
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.AddAsync(createHouseWeekInfoRequest));
+        Assert.Equal($"House with ID nonexistent not found", exception.Message);
+    }
+    
+    [Fact]
     public async Task UpdateAsync_HouseWeekInfoExists_ShouldUpdateHouseWeekInfoInDatabase()
     {
         // Arrange
