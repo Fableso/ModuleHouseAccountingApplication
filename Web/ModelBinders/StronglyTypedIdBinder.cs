@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
@@ -28,9 +29,33 @@ public class StronglyTypedIdBinder : IModelBinder
         var valueType = valueProperty.PropertyType;
         try
         {
-            var value = Convert.ChangeType(valueStr, valueType);
-            var postId = Activator.CreateInstance(postIdType, value);
-            bindingContext.Result = ModelBindingResult.Success(postId);
+            var converter = TypeDescriptor.GetConverter(valueType);
+            if (!converter.CanConvertFrom(typeof(string)))
+            {
+                bindingContext.Result = ModelBindingResult.Failed();
+                return Task.CompletedTask;
+            }
+
+            if (valueStr != null)
+            {
+                var convertedValue = converter.ConvertFromInvariantString(valueStr);
+
+                if (convertedValue == null)
+                {
+                    bindingContext.Result = ModelBindingResult.Failed();
+                    return Task.CompletedTask;
+                }
+
+                var postId = Activator.CreateInstance(postIdType, convertedValue);
+
+                if (postId == null)
+                {
+                    bindingContext.Result = ModelBindingResult.Failed();
+                    return Task.CompletedTask;
+                }
+
+                bindingContext.Result = ModelBindingResult.Success(postId);
+            }
         }
         catch (Exception)
         {
@@ -50,8 +75,10 @@ public class StronglyTypedIdBinderProvider : IModelBinderProvider
         var modelType = context.Metadata.ModelType;
         var valueProperty = modelType.GetProperty("Value");
 
-        if (!modelType.IsValueType || valueProperty == null) return null;
-        var constructor = modelType.GetConstructor([valueProperty.PropertyType]);
+        if (!modelType.IsValueType || valueProperty == null)
+            return null;
+
+        var constructor = modelType.GetConstructor(new[] { valueProperty.PropertyType });
         return constructor != null ? new BinderTypeModelBinder(typeof(StronglyTypedIdBinder)) : null;
     }
 }
