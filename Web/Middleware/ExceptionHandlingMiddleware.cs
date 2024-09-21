@@ -16,6 +16,17 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
+        catch (OperationCanceledException e)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Operation Canceled",
+                Status = StatusCodes.Status408RequestTimeout,
+                Type = "https://httpstatuses.com/499"
+            };
+            context.Response.StatusCode = StatusCodes.Status499ClientClosedRequest;
+            await context.Response.WriteAsJsonAsync(problemDetails);
+        }
         catch (EntityNotFoundException ex)
         {
             var problemDetails = new ProblemDetails
