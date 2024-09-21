@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers()
-    .AddStronglyTypedIdConversionJsonOptions()
+    .AddJsonSerializationOptions()
     .AddCustomModelBinders();
 
 builder.Services.AddValidation();
