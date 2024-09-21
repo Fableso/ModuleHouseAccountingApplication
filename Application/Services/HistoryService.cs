@@ -1,11 +1,13 @@
+using System.Reflection;
 using Application.Abstractions;
 using Application.DTO.History.Responses;
 using Application.Exceptions;
+using Application.Services.Helpers;
 using AutoMapper;
 using Domain.Entities;
 using Domain.StronglyTypedIds;
-using Domain.StronglyTypedIds.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -13,11 +15,13 @@ public class HistoryService : IHistoryService
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<HistoryService> _logger;
 
-    public HistoryService(IApplicationDbContext context, IMapper mapper)
+    public HistoryService(IApplicationDbContext context, IMapper mapper, ILogger<HistoryService> logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<AuditResponse>> GetMainHouseHistoryLogByIdAsync(
@@ -45,14 +49,11 @@ public class HistoryService : IHistoryService
             .AsNoTracking()
             .FirstOrDefaultAsync(h => h.Id == houseId, token);
 
-        if (house == null)
-        {
-            throw new EntityNotFoundException($"House with id {houseId.Value} not found");
-        }
+        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, house, _logger);
 
         var houseAudits = await GetMainHouseLogs(houseId, token);
 
-        var houseWeekInfoIds = house.HouseWeekInfos.Select(hwi => hwi.Id.ToString());
+        var houseWeekInfoIds = house!.HouseWeekInfos.Select(hwi => hwi.Id.ToString());
         var houseWeekInfoAudits = await GetRecordsLogsAsync(
             houseWeekInfoIds, nameof(_context.HouseWeekInfos), token);
 
@@ -79,16 +80,13 @@ public class HistoryService : IHistoryService
             .Include(hwi => hwi.WeekComments)
             .FirstOrDefaultAsync(hwi => hwi.Id == houseWeekInfoId, token);
         
-        if (houseWeekInfo == null)
-        {
-            throw new EntityNotFoundException($"House week info with id {houseWeekInfoId.Value} not found");
-        }
+        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseWeekInfoId, houseWeekInfo, _logger);
         
         
         var weekLogs = await GetRecordsLogsAsync(
             new[] { houseWeekInfoId.ToString() }, nameof(_context.HouseWeekInfos), token);
         
-        var weekCommentIds = houseWeekInfo.WeekComments.Select(wc => wc.Id.ToString());
+        var weekCommentIds = houseWeekInfo!.WeekComments.Select(wc => wc.Id.ToString());
         var weekCommentLogs = await GetRecordsLogsAsync(
             weekCommentIds, nameof(_context.WeekMarks), token);
         

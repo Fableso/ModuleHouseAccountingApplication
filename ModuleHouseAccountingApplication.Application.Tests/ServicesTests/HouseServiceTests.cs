@@ -7,6 +7,7 @@ using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
@@ -16,6 +17,7 @@ public class HouseServiceTests
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly Mock<IHousePostService> _mockHousePostService;
+    private readonly Mock<ILogger<HouseService>> _mockLogger;
     private readonly IHouseService _service;
 
     public HouseServiceTests()
@@ -27,10 +29,10 @@ public class HouseServiceTests
         TestHelper.SeedData(rawContext);
         
         _context = rawContext;
-        
+        _mockLogger = new Mock<ILogger<HouseService>>();
         _mapper = TestHelper.CreateMapperProfile();
         _mockHousePostService = new Mock<IHousePostService>();
-        _service = new HouseService(_context, _mapper, _mockHousePostService.Object);
+        _service = new HouseService(_context, _mapper, _mockHousePostService.Object, _mockLogger.Object);
     }
     
     [Fact]
@@ -167,6 +169,12 @@ public class HouseServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityAlreadyExistsException>(() => _service.AddAsync(createRequest));
         Assert.Equal("House with model MB 110-1 already exists. The house model must be unique", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning, 
+            It.IsAny<EventId>(), 
+            It.IsAny<It.IsAnyType>(), 
+            It.IsAny<EntityAlreadyExistsException>(), 
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -203,7 +211,13 @@ public class HouseServiceTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.UpdateAsync(updateRequest));
-        Assert.Equal("House with id NON_EXISTENT_ID not found", exception.Message);
+        Assert.Equal("House with ID NON_EXISTENT_ID not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning, 
+            It.IsAny<EventId>(), 
+            It.IsAny<It.IsAnyType>(), 
+            It.IsAny<EntityNotFoundException>(), 
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -229,7 +243,13 @@ public class HouseServiceTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.RemoveByIdAsync(nonExistentHouseId));
-        Assert.Equal("House with id NON_EXISTENT_ID not found", exception.Message);
+        Assert.Equal("House with ID NON_EXISTENT_ID not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning, 
+            It.IsAny<EventId>(), 
+            It.IsAny<It.IsAnyType>(), 
+            It.IsAny<EntityNotFoundException>(), 
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]

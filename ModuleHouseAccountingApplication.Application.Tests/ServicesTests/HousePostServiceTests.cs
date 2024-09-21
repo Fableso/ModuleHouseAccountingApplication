@@ -4,6 +4,8 @@ using Application.Services;
 using Domain.StronglyTypedIds;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 
@@ -11,6 +13,7 @@ public class HousePostServiceTests
 {
     private readonly IApplicationDbContext _context;
     private readonly IHousePostService _service;
+    private readonly Mock<ILogger<HousePostService>> _mockLogger;
 
     public HousePostServiceTests()
     {
@@ -21,7 +24,8 @@ public class HousePostServiceTests
         TestHelper.SeedData(rawContext);
         
         _context = rawContext;
-        _service = new HousePostService(_context);
+        _mockLogger = new Mock<ILogger<HousePostService>>();
+        _service = new HousePostService(_context, _mockLogger.Object);
     }
     
     [Fact]
@@ -69,7 +73,13 @@ public class HousePostServiceTests
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() =>
             _service.UpdatePostsForHouseAsync(houseId, newPostIds));
 
-        Assert.Equal($"House with ID nonexistent does not exist.", exception.Message);
+        Assert.Equal($"House with ID nonexistent not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning, 
+            It.IsAny<EventId>(), 
+            It.IsAny<It.IsAnyType>(), 
+            It.IsAny<EntityNotFoundException>(), 
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -84,6 +94,12 @@ public class HousePostServiceTests
             _service.UpdatePostsForHouseAsync(houseId, newPostIds));
 
         Assert.Contains("The following Post IDs do not exist: 99", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning, 
+            It.IsAny<EventId>(), 
+            It.IsAny<It.IsAnyType>(), 
+            It.IsAny<EntityNotFoundException>(), 
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]

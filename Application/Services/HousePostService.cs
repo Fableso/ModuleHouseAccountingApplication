@@ -1,17 +1,23 @@
+using System.Runtime.CompilerServices;
 using Application.Abstractions;
 using Application.Exceptions;
+using Application.Services.Helpers;
 using Domain.Entities;
 using Domain.StronglyTypedIds;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
 public class HousePostService : IHousePostService
 {
     private readonly IApplicationDbContext _context;
-    public HousePostService(IApplicationDbContext context)
+    private readonly ILogger<HousePostService> _logger;
+
+    public HousePostService(IApplicationDbContext context, ILogger<HousePostService> logger)
     {
         _context = context;
+        _logger = logger;
     }
     
     public async Task AddHousePostRelationsForNewHouseAsync(HouseId houseId, IEnumerable<PostId> postIdsToAdd, CancellationToken token = default)
@@ -46,14 +52,11 @@ public class HousePostService : IHousePostService
     
     private async Task ValidateHouseExistsAsync(HouseId houseId, CancellationToken token)
     {
-        var houseExists = await _context.Houses.AnyAsync(h => h.Id == houseId, token);
-        if (!houseExists)
-        {
-            throw new EntityNotFoundException($"House with ID {houseId.Value} does not exist.");
-        }
+        ExceptionCasesHandlingHelper
+            .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, await _context.Houses.FindAsync(houseId, token), _logger);
     }
 
-    private async Task ValidatePostsExistAsync(IEnumerable<PostId> postIds, CancellationToken token)
+    private async Task ValidatePostsExistAsync(IEnumerable<PostId> postIds, CancellationToken token, [CallerMemberName] string caller = "")
     {
         var postIdsList = postIds.ToList();
         var existingPostIds = await _context.Posts
@@ -64,6 +67,8 @@ public class HousePostService : IHousePostService
         var invalidPostIds = postIdsList.Except(existingPostIds).ToList();
         if (invalidPostIds.Count != 0)
         {
+            _logger.LogWarning("{ActionName}: The following Post IDs do not exist: {InvalidPostIds}",
+                caller, string.Join(", ", invalidPostIds.Select(x => x.Value)));
             throw new EntityNotFoundException($"The following Post IDs do not exist: {string.Join(", ", invalidPostIds.Select(x => x.Value))}");
         }
     }

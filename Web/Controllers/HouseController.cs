@@ -43,7 +43,7 @@ public class HouseController : ControllerBase
         var house =  await _houseService.GetByIdAsync(model, token);
         if (house is null)
         {
-            return NotFound("No houses found in the given date range");
+            return NotFound($"House with model {model.Value} not found");
         }
 
         return Ok(house);

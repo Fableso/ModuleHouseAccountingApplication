@@ -3,11 +3,15 @@ using Application.DTO.HouseWeekInfo.Response;
 using Application.Exceptions;
 using Application.Services;
 using AutoMapper;
+using Castle.Core.Logging;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 
@@ -15,6 +19,7 @@ public class HouseWeekInfoServiceTests
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly Mock<ILogger<HouseWeekInfoService>> _mockLogger;
     private readonly IHouseWeekInfoService _service;
     public HouseWeekInfoServiceTests()
     {
@@ -25,9 +30,9 @@ public class HouseWeekInfoServiceTests
         TestHelper.SeedData(rawContext);
         
         _context = rawContext;
-        
+        _mockLogger = new Mock<ILogger<HouseWeekInfoService>>();
         _mapper = TestHelper.CreateMapperProfile();
-        _service = new HouseWeekInfoService(_context, _mapper);
+        _service = new HouseWeekInfoService(_context, _mapper, _mockLogger.Object);
     }
     
     [Fact]
@@ -115,6 +120,12 @@ public class HouseWeekInfoServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.GetHouseInfosForHouseAsync(nonExistentHouseId));
         Assert.Equal($"House with ID nonexistent not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<EntityNotFoundException>(),
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -148,6 +159,12 @@ public class HouseWeekInfoServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.GetHouseInfosForHouseInTimeSpanAsync(nonExistentHouseId, dateSpan));
         Assert.Equal($"House with ID nonexistent not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<EntityNotFoundException>(),
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -193,6 +210,12 @@ public class HouseWeekInfoServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.AddAsync(createHouseWeekInfoRequest));
         Assert.Equal($"House with ID nonexistent not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<EntityNotFoundException>(),
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]
@@ -225,6 +248,12 @@ public class HouseWeekInfoServiceTests
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(() => _service.UpdateStatusAsync(updateHouseWeekInfoRequest));
         Assert.Equal($"HouseWeekInfo with ID 999 not found", exception.Message);
+        _mockLogger.Verify(logger => logger.Log(
+            LogLevel.Warning,
+            It.IsAny<EventId>(),
+            It.IsAny<It.IsAnyType>(),
+            It.IsAny<EntityNotFoundException>(),
+            It.IsAny<Func<It.IsAnyType, Exception, string>>()!), Times.Once);
     }
     
     [Fact]

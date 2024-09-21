@@ -6,6 +6,8 @@ using AutoMapper;
 using Domain.StronglyTypedIds;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 
@@ -13,6 +15,7 @@ public class WeekMarkServiceTests
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly Mock<ILogger<WeekMarkService>> _mockLogger;
     private readonly IWeekMarkService _service;
     public WeekMarkServiceTests()
     {
@@ -23,9 +26,9 @@ public class WeekMarkServiceTests
         TestHelper.SeedData(rawContext);
         
         _context = rawContext;
-        
+        _mockLogger = new Mock<ILogger<WeekMarkService>>();
         _mapper = TestHelper.CreateMapperProfile();
-        _service = new WeekMarkService(_context, _mapper);
+        _service = new WeekMarkService(_context, _mapper, _mockLogger.Object);
     }
     
     [Fact]
