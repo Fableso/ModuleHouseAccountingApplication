@@ -56,7 +56,7 @@ public class PostService : IPostService
     public async Task RemoveByIdAsync(PostId id, CancellationToken token = default)
     {
         var postToDelete = await _context.Posts.FindAsync(id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, postToDelete, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, postToDelete, _logger);
         _context.Posts.Remove(postToDelete!);
         await _context.SaveChangesAsync(token);
     }
@@ -64,7 +64,7 @@ public class PostService : IPostService
     public async Task<PostResponse> UpdateAsync(UpdatePostRequest post, CancellationToken token = default)
     {
         var existingPost = await _context.Posts.FindAsync(post.Id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(post.Id, existingPost, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(post.Id, existingPost, _logger);
 
         if (await PostNameExists(post.Name, token) && existingPost!.Name != post.Name)
         {

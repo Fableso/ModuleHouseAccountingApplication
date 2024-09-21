@@ -49,7 +49,7 @@ public class HistoryService : IHistoryService
             .AsNoTracking()
             .FirstOrDefaultAsync(h => h.Id == houseId, token);
 
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, house, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, house, _logger);
 
         var houseAudits = await GetMainHouseLogs(houseId, token);
 
@@ -80,7 +80,7 @@ public class HistoryService : IHistoryService
             .Include(hwi => hwi.WeekComments)
             .FirstOrDefaultAsync(hwi => hwi.Id == houseWeekInfoId, token);
         
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseWeekInfoId, houseWeekInfo, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseWeekInfoId, houseWeekInfo, _logger);
         
         
         var weekLogs = await GetRecordsLogsAsync(

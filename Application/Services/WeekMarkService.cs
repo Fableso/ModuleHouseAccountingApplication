@@ -40,7 +40,7 @@ public class WeekMarkService : IWeekMarkService
 
     public async Task<WeekMarkResponse> AddAsync(CreateWeekMarkRequest request, CancellationToken token = default)
     {
-        ExceptionCasesHandlingHelper
+        ExceptionThrowingHelper
             .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(
                 request.HouseWeekInfoId,
                 await _context.HouseWeekInfos.FindAsync(request.HouseWeekInfoId, token),
@@ -54,7 +54,7 @@ public class WeekMarkService : IWeekMarkService
     public async Task RemoveByIdAsync(WeekMarkId id, CancellationToken token = default)
     {
         var weekMark = await _context.WeekMarks.FindAsync(id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, weekMark, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, weekMark, _logger);
         _context.WeekMarks.Remove(weekMark!);
         await _context.SaveChangesAsync(token);
     }
@@ -62,7 +62,7 @@ public class WeekMarkService : IWeekMarkService
     public async Task<WeekMarkResponse> UpdateAsync(UpdateWeekMarkRequest request, CancellationToken token = default)
     {
         var weekMark = await _context.WeekMarks.FindAsync(request.Id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(request.Id, weekMark, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(request.Id, weekMark, _logger);
         _mapper.Map(request, weekMark);
         await _context.SaveChangesAsync(token);
         return _mapper.Map<WeekMarkResponse>(weekMark);

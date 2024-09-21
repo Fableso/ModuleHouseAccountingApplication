@@ -52,7 +52,7 @@ public class HousePostService : IHousePostService
     
     private async Task ValidateHouseExistsAsync(HouseId houseId, CancellationToken token)
     {
-        ExceptionCasesHandlingHelper
+        ExceptionThrowingHelper
             .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, await _context.Houses.FindAsync(houseId, token), _logger);
     }
 

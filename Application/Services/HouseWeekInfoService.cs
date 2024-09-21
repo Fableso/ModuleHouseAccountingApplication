@@ -40,7 +40,7 @@ public class HouseWeekInfoService : IHouseWeekInfoService
 
     public async Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosForHouseAsync(HouseId houseId, CancellationToken token = default)
     {
-        ExceptionCasesHandlingHelper
+        ExceptionThrowingHelper
             .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, await _context.Houses.FindAsync(houseId, token), _logger);
         var houseWeekInfos = await FetchHouseWeekInfosForHouseAsync(houseId, token);
         return _mapper.Map<IEnumerable<HouseWeekInfoResponse>>(houseWeekInfos);
@@ -50,7 +50,7 @@ public class HouseWeekInfoService : IHouseWeekInfoService
     public async Task<IEnumerable<HouseWeekInfoResponse>> GetHouseInfosForHouseInTimeSpanAsync(HouseId houseId, DateSpan dateSpan,
         CancellationToken token = default)
     {
-        ExceptionCasesHandlingHelper
+        ExceptionThrowingHelper
             .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseId, await _context.Houses.FindAsync(houseId, token), _logger);
         var houseWeekInfos = await FetchHouseWeekInfosForHouseInDateRangeAsync(houseId, dateSpan, token);
         return _mapper.Map<IEnumerable<HouseWeekInfoResponse>>(houseWeekInfos);
@@ -58,7 +58,7 @@ public class HouseWeekInfoService : IHouseWeekInfoService
 
     public async Task<HouseWeekInfoResponse> AddAsync(CreateHouseWeekInfoRequest request, CancellationToken token = default)
     {
-        ExceptionCasesHandlingHelper
+        ExceptionThrowingHelper
             .ThrowEntityNotFoundExceptionIfEntityDoesNotExist(request.HouseId, await _context.Houses.FindAsync(request.HouseId, token), _logger);
         var houseWeekInfo = _mapper.Map<HouseWeekInfo>(request);
         await _context.HouseWeekInfos.AddAsync(houseWeekInfo, token);
@@ -69,7 +69,7 @@ public class HouseWeekInfoService : IHouseWeekInfoService
     public async Task RemoveByIdAsync(HouseWeekInfoId id, CancellationToken token = default)
     {
         var houseWeekInfo = await _context.HouseWeekInfos.FindAsync(id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, houseWeekInfo, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, houseWeekInfo, _logger);
         _context.HouseWeekInfos.Remove(houseWeekInfo!);
         await _context.SaveChangesAsync(token);
     }
@@ -77,7 +77,7 @@ public class HouseWeekInfoService : IHouseWeekInfoService
     public async Task<HouseWeekInfoResponse> UpdateStatusAsync(UpdateHouseWeekInfoRequest request, CancellationToken token = default)
     {
         var houseWeekInfo = await _context.HouseWeekInfos.FindAsync(request.Id, token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(request.Id, houseWeekInfo, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(request.Id, houseWeekInfo, _logger);
         var updatedHouseWeekInfo = _mapper.Map(request, houseWeekInfo);
         _context.HouseWeekInfos.Update(updatedHouseWeekInfo!);
         await _context.SaveChangesAsync(token);

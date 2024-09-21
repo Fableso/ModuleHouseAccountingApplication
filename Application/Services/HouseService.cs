@@ -60,7 +60,7 @@ public class HouseService : IHouseService
     {
         var existingHouse = await FetchHouseById(houseRequest.Model, token);
         
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseRequest.Model, existingHouse, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(houseRequest.Model, existingHouse, _logger);
         
         var updatedHouse = _mapper.Map(houseRequest, existingHouse);
         await _housePostService.UpdatePostsForHouseAsync(updatedHouse!.Id, houseRequest.PostIds, token);
@@ -72,7 +72,7 @@ public class HouseService : IHouseService
     public async Task RemoveByIdAsync(HouseId id, CancellationToken token = default)
     {
         var house = await _context.Houses.FindAsync([id], token);
-        ExceptionCasesHandlingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, house, _logger);
+        ExceptionThrowingHelper.ThrowEntityNotFoundExceptionIfEntityDoesNotExist(id, house, _logger);
         _context.Houses.Remove(house!);
         await _context.SaveChangesAsync(token);
     }
