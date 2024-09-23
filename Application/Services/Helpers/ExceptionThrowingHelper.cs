@@ -8,7 +8,7 @@ namespace Application.Services.Helpers;
 public static class ExceptionThrowingHelper
 {
     public static void ThrowEntityNotFoundExceptionIfEntityDoesNotExist<TEntity, TId>(IStronglyTypedId<TId> id, TEntity? entity, ILogger? logger = default,
-        [CallerMemberName] string actionName = "ExceptionCasesHandlingHelper")
+        [CallerMemberName] string actionName = "ExceptionThrowingHelper")
         where TId : notnull
         where TEntity : class
     {

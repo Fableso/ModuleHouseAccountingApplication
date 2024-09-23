@@ -2,12 +2,14 @@ using System.Reflection;
 using Application.Abstractions;
 using Domain.Entities;
 using Infrastructure.AuditSystem;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Data;
 
-public class MhDbContext : DbContext, IApplicationDbContext
+public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
     public MhDbContext(DbContextOptions<MhDbContext> options)
         : base(options)
@@ -102,9 +104,9 @@ public class MhDbContext : DbContext, IApplicationDbContext
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
