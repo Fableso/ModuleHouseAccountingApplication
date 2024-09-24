@@ -1,11 +1,12 @@
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.AuditSystem;
 
 public class EntityAuditInformation
 {
-    public dynamic Entity { get; set; } = null!;
+    public EntityEntry EntityEntry { get; set; } = null!;
     public string TableName { get; set; } = string.Empty;
 
     public EntityState State { get; set; }

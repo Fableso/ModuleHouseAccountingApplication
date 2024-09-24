@@ -15,12 +15,9 @@ namespace Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _configuration;
-
-    public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+    public AuthController(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
-        _configuration = configuration;
     }
     
     [HttpPost("login")]
@@ -50,16 +47,16 @@ public class AuthController : ControllerBase
         return Unauthorized();
     }
     
-    private JwtSecurityToken GetToken(IEnumerable<Claim> claims)
+    private static JwtSecurityToken GetToken(IEnumerable<Claim> claims)
     {
         var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
         var authSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(secretKey ?? throw new ConfigurationException("JWT_SECRET_KEY is not set")));
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JWT_ISSUER"],
-            audience: _configuration["JWT_AUDIENCE"],
             expires: DateTime.UtcNow.AddHours(3),
+            issuer: Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ConfigurationException("JWT_ISSUER is not set"),
+            audience:Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ConfigurationException("JWT_AUDIENCE is not set"),
             claims: claims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );

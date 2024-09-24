@@ -58,19 +58,12 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
 
     private static EntityAuditInformation CreateAuditInformation(EntityEntry entityEntry)
     {
-        dynamic entity = entityEntry.Entity;
-        List<AuditEntry>? changes = new();
-        if (entityEntry.State == EntityState.Modified)
-        {
-            changes = GetEntityChanges(entityEntry);
-        }
-        
         return new EntityAuditInformation
         {
-            Entity = entity,
-            TableName = entityEntry.Metadata?.GetTableName() ?? entity.GetType().Name,
+            EntityEntry = entityEntry,
+            TableName = entityEntry.Metadata?.GetTableName() ?? entityEntry.Entity.GetType().Name,
             State = entityEntry.State,
-            Changes = changes 
+            Changes = entityEntry.State == EntityState.Modified ? GetEntityChanges(entityEntry) : new List<AuditEntry>()
         };
     }
 
@@ -92,17 +85,24 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
     {
         foreach (var item in auditInformation)
         {
+            var keyName = item.EntityEntry.FindPrimaryKeyPropertyName();
+
+            var keyValue = keyName != null ? item.EntityEntry.Property(keyName).CurrentValue?.ToString() : "UnknownKey";
+
             Audit audit = new()
             {
                 TableName = item.TableName,
-                RecordId = item.Entity.Id.ToString(),
+                RecordId = keyValue ?? "UnknownKey",
                 ChangeDate = DateTime.Now,
                 Operation = item.OperationType,
                 Changes = item.Changes,
             };
+
             await Audits.AddAsync(audit, cancellationToken);
         }
     }
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -110,3 +110,14 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
+
+public static class EntityTypeExtensions
+{
+    public static string? FindPrimaryKeyPropertyName(this EntityEntry entry)
+    {
+        var key = entry.Metadata.FindPrimaryKey();
+        return key?.Properties.FirstOrDefault()?.Name;
+    }
+}
+
+

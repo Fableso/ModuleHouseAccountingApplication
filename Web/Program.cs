@@ -19,8 +19,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
 var app = builder.Build();
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseRouting();
 
 await DbInitializer.SeedRolesAsync(app.Services);
 if (app.Environment.IsDevelopment())
@@ -34,7 +33,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 await app.RunAsync();
