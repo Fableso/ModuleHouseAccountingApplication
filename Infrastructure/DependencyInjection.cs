@@ -5,6 +5,7 @@ using Infrastructure.Identity;
 using Infrastructure.Identity.Admin;
 using Infrastructure.Identity.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -51,8 +52,7 @@ public static class DependencyInjection
                 };
             });
 
-
-        services.AddHttpContextAccessor();
+        services.AddSingleton<IAuthorizationHandler, RoleAndMethodHandler>();
 
         services.AddAuthorizationBuilder()
             .AddPolicy("SpectatorPolicy", policy =>
@@ -71,7 +71,7 @@ public static class DependencyInjection
                     ])))
             .AddPolicy("AdminPolicy", policy =>
                 policy.RequireRole("Admin"));
-
+        
         services
             .AddIdentityCore<ApplicationUser>(config =>
             {

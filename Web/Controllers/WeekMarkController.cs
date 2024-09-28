@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.DTO.WeekMark.Request;
 using Domain.StronglyTypedIds;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Validation.Extensions;
 
@@ -17,6 +18,7 @@ public class WeekMarkController : ControllerBase
         _weekMarkService = weekMarkService;
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("{id}")] 
     public async Task<IActionResult> GetWeekMarkById([FromRoute] WeekMarkId id)
     {
@@ -28,6 +30,7 @@ public class WeekMarkController : ControllerBase
         return Ok(result);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("week-info/{id}")]
     public async Task<IActionResult> GetWeekMarksByWeekInfoId([FromRoute] HouseWeekInfoId id)
     {
@@ -39,6 +42,7 @@ public class WeekMarkController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPost]
     public async Task<IActionResult> CreateWeekMark([FromBody] CreateWeekMarkRequest request)
     {
@@ -51,6 +55,7 @@ public class WeekMarkController : ControllerBase
         return CreatedAtAction("GetWeekMarkById", new { id = result.Id }, result);
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateWeekMark([FromBody] UpdateWeekMarkRequest request)
     {
@@ -63,6 +68,7 @@ public class WeekMarkController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWeekMark([FromRoute] WeekMarkId id)
     {

@@ -1,5 +1,6 @@
 using Application.Abstractions;
 using Domain.StronglyTypedIds;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
@@ -15,6 +16,7 @@ public class HistoryController : ControllerBase
         _historyService = historyService;
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("house-full/{houseId}")]
     public async Task<IActionResult> GetFullHouseHistoryLogByIdAsync([FromRoute] HouseId houseId, CancellationToken token = default)
     {
@@ -27,6 +29,7 @@ public class HistoryController : ControllerBase
         return Ok(audits);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("house-main/{houseId}")]
     public async Task<IActionResult> GetMainHouseHistoryLogByIdAsync([FromRoute] HouseId houseId, CancellationToken token = default)
     {
@@ -39,6 +42,7 @@ public class HistoryController : ControllerBase
         return Ok(audits);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("house-week/{houseWeekInfoId}")]
     public async Task<IActionResult> GetHouseWeekHistoryLogByIdAsync([FromRoute] HouseWeekInfoId houseWeekInfoId, CancellationToken token = default)
     {

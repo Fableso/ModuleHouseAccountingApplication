@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.DTO.Post.Request;
 using Domain.StronglyTypedIds;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Validation.Extensions;
 
@@ -17,6 +18,7 @@ public class PostController : ControllerBase
         _postService = postService;
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetAllPostsAsync(CancellationToken token = default)
     {
@@ -29,6 +31,7 @@ public class PostController : ControllerBase
         return Ok(posts);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetPostByIdAsync([FromRoute] PostId id, CancellationToken token = default)
     {
@@ -41,6 +44,7 @@ public class PostController : ControllerBase
         return Ok(post);
     }
     
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPost]
     public async Task<IActionResult> AddPostAsync([FromBody] CreatePostRequest postRequest, CancellationToken token = default)
     {
@@ -53,6 +57,7 @@ public class PostController : ControllerBase
         return CreatedAtAction("GetPostById", new { id = post.Id }, post);
     }
     
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdatePostAsync([FromBody] UpdatePostRequest postRequest, CancellationToken token = default)
     {
@@ -65,6 +70,7 @@ public class PostController : ControllerBase
         return Ok(post);
     }
     
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemovePostByIdAsync([FromRoute] PostId id, CancellationToken token = default)
     {

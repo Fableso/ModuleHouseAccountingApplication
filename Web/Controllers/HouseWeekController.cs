@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Application.DTO.HouseWeekInfo.Request;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Validation.Extensions;
 
@@ -18,6 +19,7 @@ public class HouseWeekController : ControllerBase
         _houseWeekService = houseWeekService;
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("house/{houseId}")]
     public async Task<IActionResult> GetHouseWeeksForHouseAsync([FromRoute] HouseId houseId, CancellationToken token = default)
     {
@@ -25,6 +27,7 @@ public class HouseWeekController : ControllerBase
         return Ok(houseWeeks);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("house/{houseId}/range")]
     public async Task<IActionResult> GetHouseWeeksForHouseInTimeSpanAsync(
         [FromRoute] HouseId houseId,
@@ -41,6 +44,7 @@ public class HouseWeekController : ControllerBase
         return Ok(houseWeeks);
     }
     
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("range")]
     public async Task<IActionResult> GetHouseWeeksInTimeSpanAsync([FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate, CancellationToken token = default)
     {
@@ -65,6 +69,7 @@ public class HouseWeekController : ControllerBase
         return Ok(houseWeek);
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPost]
     public async Task<IActionResult> AddHouseWeekAsync([FromBody] CreateHouseWeekInfoRequest houseWeekRequest, CancellationToken token = default)
     {
@@ -77,6 +82,7 @@ public class HouseWeekController : ControllerBase
         return CreatedAtAction("GetHouseWeekById", new { id = houseWeek.Id }, houseWeek);
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateHouseWeekAsync([FromBody] UpdateHouseWeekInfoRequest houseWeekRequest, CancellationToken token = default)
     {
@@ -89,6 +95,7 @@ public class HouseWeekController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteHouseWeekAsync([FromRoute] HouseWeekInfoId id, CancellationToken token = default)
     {

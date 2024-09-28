@@ -3,6 +3,7 @@ using Application.DTO.House.Request;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Validation.Extensions;
 
@@ -19,6 +20,7 @@ public class HouseController : ControllerBase
         _houseService = houseService;
     }
 
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet]
     public async Task<IActionResult> GetHousesInDateRange([FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate, CancellationToken token = default)
     {
@@ -37,6 +39,7 @@ public class HouseController : ControllerBase
         return Ok(houses);
     }
 
+    [Authorize(Policy = "SpectatorPolicy")]
     [HttpGet("{model}")]
     public async Task<IActionResult> GetHouseByModelAsync([FromRoute] HouseId model, CancellationToken token = default)
     {
@@ -49,6 +52,7 @@ public class HouseController : ControllerBase
         return Ok(house);
     }
     
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPost]
     public async Task<IActionResult> AddHouseAsync([FromBody] CreateHouseRequest houseRequest, CancellationToken token = default)
     {
@@ -61,6 +65,7 @@ public class HouseController : ControllerBase
         return CreatedAtAction("GetHouseByModel", new { model = house.Model.Value }, house);
     }
     
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpPut]
     public async Task<IActionResult> UpdateHouseAsync([FromBody] UpdateHouseRequest houseRequest, CancellationToken token = default)
     {
@@ -73,8 +78,8 @@ public class HouseController : ControllerBase
         await _houseService.UpdateAsync(houseRequest, token);
         return NoContent();
     }
-
-
+    
+    [Authorize(Policy = "DefaultUserPolicy")]
     [HttpDelete("{model}")]
     public async Task<IActionResult> DeleteHouseAsync([FromRoute] HouseId model, CancellationToken token = default)
     {
