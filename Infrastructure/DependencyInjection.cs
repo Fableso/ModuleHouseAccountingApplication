@@ -1,5 +1,6 @@
 using System.Text;
 using Application.Abstractions;
+using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Infrastructure.Identity.Admin;

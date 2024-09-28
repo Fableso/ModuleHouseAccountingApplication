@@ -1,5 +1,7 @@
 using Application.DTO.Identity;
 using Application.Exceptions;
+using Domain.Entities;
+using Infrastructure.Identity.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 

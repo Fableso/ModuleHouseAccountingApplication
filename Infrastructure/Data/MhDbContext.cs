@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Authentication;
 using Application.Abstractions;
 using Domain.Entities;
 using Infrastructure.AuditSystem;
@@ -83,6 +84,7 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
     }
     public async Task AddAuditAsync(List<EntityAuditInformation> auditInformation, CancellationToken cancellationToken)
     {
+        var userId = await Users.Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
         foreach (var item in auditInformation)
         {
             var keyName = item.EntityEntry.FindPrimaryKeyPropertyName();
@@ -96,6 +98,7 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
                 ChangeDate = DateTime.Now,
                 Operation = item.OperationType,
                 Changes = item.Changes,
+                ChangedById = userId ?? throw new UnableToGetChangeAuthorIdException("Unable to determine the change author")
             };
 
             await Audits.AddAsync(audit, cancellationToken);

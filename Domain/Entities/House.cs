@@ -2,7 +2,6 @@ using Domain.Common;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
-using FluentResults;
 
 namespace Domain.Entities;
 

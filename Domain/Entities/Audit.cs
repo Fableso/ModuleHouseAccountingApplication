@@ -8,4 +8,8 @@ public class Audit
     public string RecordId { get; init; } = string.Empty;
     public IEnumerable<AuditEntry> Changes { get; init; } = null!;
     public DateTime? ChangeDate { get; init; }
+
+    public string ChangedById { get; init; } = string.Empty;
+    
+    public ApplicationUser ChangedBy { get; init; } = null!;
 }

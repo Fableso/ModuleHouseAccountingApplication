@@ -12,5 +12,9 @@ public class AuditConfiguration : IEntityTypeConfiguration<Audit>
     {
         builder.Property(a => a.Id)
             .ValueGeneratedOnAdd();
+
+        builder.HasOne(a => a.ChangedBy)
+            .WithMany(au => au.Audits)
+            .HasForeignKey(a => a.ChangedById);
     }
 }
