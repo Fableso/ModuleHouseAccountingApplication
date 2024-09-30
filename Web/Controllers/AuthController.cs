@@ -1,13 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Exceptions;
 using Domain.Entities;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
-using Web.Exceptions;
 
 namespace Web.Controllers;
 
@@ -16,6 +17,7 @@ namespace Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
+
     public AuthController(UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
@@ -25,29 +27,60 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user is not null && await _userManager.CheckPasswordAsync(user, request.Password))
+        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName ?? throw new InvalidOperationException("User name is null")),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-            
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-            
-            var token = GetToken(claims);
-            
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Unauthorized("Invalid email or password.");
         }
 
-        return Unauthorized();
+        if (!await _userManager.IsEmailConfirmedAsync(user))
+        {
+            return Unauthorized("You need to confirm your email before logging in.");
+        }
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var claims = new List<Claim>
+        {
+            new Claim("UserId", user.Id),
+            new Claim(ClaimTypes.Name, user.UserName ?? throw new InvalidOperationException("User name is null")),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+        claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var token = GetToken(claims);
+
+        return Ok(new
+        {
+            token = new JwtSecurityTokenHandler().WriteToken(token),
+            expiration = token.ValidTo
+        });
     }
-    
+
+
+    [HttpGet("ConfirmEmail")]
+    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    {
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+        {
+            return BadRequest("User ID and Token are required");
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+        if (result.Succeeded)
+        {
+            return Ok("Email confirmed successfully!");
+        }
+
+        return BadRequest("Email confirmation failed");
+    }
+
     private static JwtSecurityToken GetToken(IEnumerable<Claim> claims)
     {
         var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
@@ -57,7 +90,7 @@ public class AuthController : ControllerBase
         var token = new JwtSecurityToken(
             expires: DateTime.UtcNow.AddHours(3),
             issuer: Environment.GetEnvironmentVariable("JWT_ISSUER") ?? throw new ConfigurationException("JWT_ISSUER is not set"),
-            audience:Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ConfigurationException("JWT_AUDIENCE is not set"),
+            audience: Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? throw new ConfigurationException("JWT_AUDIENCE is not set"),
             claims: claims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );

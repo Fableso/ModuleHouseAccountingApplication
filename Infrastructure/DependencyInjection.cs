@@ -1,9 +1,10 @@
 using System.Text;
 using Application.Abstractions;
+using Application.Exceptions;
+using Application.Services;
 using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Identity;
-using Infrastructure.Identity.Admin;
 using Infrastructure.Identity.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Web.Exceptions;
 
 namespace Infrastructure;
 
@@ -27,7 +27,13 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<MhDbContext>());
         
-        
+        services.AddHttpContextAccessor();
+
+        services.AddIdentityCore<ApplicationUser>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<MhDbContext>()
+        .AddDefaultTokenProviders();
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,19 +47,17 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    
+
                     ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ??
                                   throw new ConfigurationException("JWT_ISSUER is not set"),
-                    
+
                     ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ??
                                     throw new ConfigurationException("JWT_AUDIENCE is not set"),
-                    
+
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ??
                         throw new ConfigurationException("JWT_SECRET_KEY is not set")))
                 };
             });
-
-        services.AddSingleton<IAuthorizationHandler, RoleAndMethodHandler>();
 
         services.AddAuthorizationBuilder()
             .AddPolicy("SpectatorPolicy", policy =>
@@ -72,18 +76,10 @@ public static class DependencyInjection
                     ])))
             .AddPolicy("AdminPolicy", policy =>
                 policy.RequireRole("Admin"));
-        
-        services
-            .AddIdentityCore<ApplicationUser>(config =>
-            {
-                config.SignIn.RequireConfirmedEmail = false;
-            })
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<MhDbContext>()
-            .AddApiEndpoints();
-        
-        
+
+        services.AddSingleton<IAuthorizationHandler, RoleAndMethodHandler>();
         services.AddScoped<IAdminService, AdminService>();
+
         return services;
-    }   
+    }
 }

@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IHouseWeekInfoService, HouseWeekInfoService>();
         services.AddScoped<IWeekMarkService, WeekMarkService>();
         services.AddScoped<IHistoryService, HistoryService>();
+        services.AddTransient<IEmailSender, SendGridEmailSender>();
 
         return services;
     }

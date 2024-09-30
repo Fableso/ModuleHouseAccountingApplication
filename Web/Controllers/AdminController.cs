@@ -1,7 +1,10 @@
+using Application.Abstractions;
 using Application.DTO.Identity;
-using Infrastructure.Identity.Admin;
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using IEmailSender = Microsoft.AspNetCore.Identity.UI.Services.IEmailSender;
 
 namespace Web.Controllers;
 
@@ -12,7 +15,7 @@ public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
 
-    public AdminController(IAdminService adminService)
+    public AdminController(IAdminService adminService, IEmailSender emailSender)
     {
         _adminService = adminService;
     }

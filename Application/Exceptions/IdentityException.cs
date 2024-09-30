@@ -1,4 +1,4 @@
-namespace Infrastructure.Identity.Exceptions;
+namespace Application.Exceptions;
 
 public class IdentityException : Exception
 {

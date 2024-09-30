@@ -1,4 +1,4 @@
-namespace Web.Exceptions;
+namespace Application.Exceptions;
 
 public class ConfigurationException : Exception
 {
