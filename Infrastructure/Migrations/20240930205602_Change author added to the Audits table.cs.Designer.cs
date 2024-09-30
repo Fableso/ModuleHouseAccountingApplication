@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(MhDbContext))]
-    [Migration("20240928191346_Change author added to the Audits table")]
-    partial class ChangeauthoraddedtotheAuditstable
+    [Migration("20240930205602_Change author added to the Audits table.cs")]
+    partial class ChangeauthoraddedtotheAuditstablecs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ChangedById")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Operation")
@@ -426,9 +425,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.ApplicationUser", "ChangedBy")
                         .WithMany("Audits")
-                        .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ChangedById");
 
                     b.Navigation("ChangedBy");
                 });

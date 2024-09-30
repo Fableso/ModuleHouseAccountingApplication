@@ -1,11 +1,14 @@
+using System.Security.Claims;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace ModuleHouseAccountingApplication.Infrastructure.Tests;
 
@@ -16,11 +19,38 @@ public class AuditSystemTests
     public AuditSystemTests()
     {
         var services = new ServiceCollection();
-        services.AddDbContext<MhDbContext>(options =>
-            options.UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
+
+        var httpContextAccessor = GetMockHttpContextAccessor();
+        services.AddSingleton(httpContextAccessor);
         
+        services.AddDbContext<MhDbContext>(options =>
+        {
+            options.UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+        });
+
         _serviceProvider = services.BuildServiceProvider();
+    }
+
+    private static IHttpContextAccessor GetMockHttpContextAccessor()
+    {
+        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+
+        var mockHttpContext = new DefaultHttpContext();
+
+        mockHttpContext.Request.Headers["Authorization"] = "Bearer some-valid-token";
+
+        var claims = new List<Claim>
+        {
+            new Claim("UserId", "TestUserId")
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var principal = new ClaimsPrincipal(identity);
+        mockHttpContext.User = principal;
+
+        mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(mockHttpContext);
+
+        return mockHttpContextAccessor.Object;
     }
     
     private MhDbContext CreateDbContext()
@@ -71,7 +101,7 @@ public class AuditSystemTests
 
         // Assert
         var audits = await context.Audits.Include(a => a.Changes).ToListAsync();
-        Assert.Equal(2, audits.Count);  // 1 for creation, 1 for update
+        Assert.Equal(2, audits.Count);
         var updateAudit = audits[^1];
         Assert.Equal("Update", updateAudit.Operation);
         Assert.Contains(updateAudit.Changes,
@@ -94,7 +124,7 @@ public class AuditSystemTests
 
         // Assert
         var audits = await context.Audits.Include(a => a.Changes).ToListAsync();
-        Assert.Equal(2, audits.Count);  // 1 for creation, 1 for update
+        Assert.Equal(2, audits.Count);
         var updateAudit = audits[^1];
         Assert.Equal("Update", updateAudit.Operation);
         Assert.Contains(updateAudit.Changes,
@@ -120,7 +150,7 @@ public class AuditSystemTests
 
         // Assert
         var audits = await context.Audits.Include(a => a.Changes).ToListAsync();
-        Assert.Equal(2, audits.Count);  // 1 for creation, 1 for delete
+        Assert.Equal(2, audits.Count);
         var deleteAudit = audits[^1];
         Assert.Equal("Delete", deleteAudit.Operation);
         Assert.Empty(deleteAudit.Changes);

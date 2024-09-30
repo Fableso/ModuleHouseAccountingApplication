@@ -2,7 +2,6 @@ using Application.Abstractions;
 using Application.DTO.HouseWeekInfo.Response;
 using Application.Exceptions;
 using Application.Services;
-using AutoMapper;
 using Castle.Core.Logging;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
@@ -18,21 +17,16 @@ namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 public class HouseWeekInfoServiceTests
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly Mock<ILogger<HouseWeekInfoService>> _mockLogger;
     private readonly IHouseWeekInfoService _service;
     public HouseWeekInfoServiceTests()
     {
-        var options = TestHelper.GetTestDbOptions();
-        
-        var rawContext = new MhDbContext(options);
-
-        TestHelper.SeedData(rawContext);
+        var rawContext = TestHelper.GetTestDbContext();
         
         _context = rawContext;
         _mockLogger = new Mock<ILogger<HouseWeekInfoService>>();
-        _mapper = TestHelper.CreateMapperProfile();
-        _service = new HouseWeekInfoService(_context, _mapper, _mockLogger.Object);
+        var mapper = TestHelper.CreateMapperProfile();
+        _service = new HouseWeekInfoService(_context, mapper, _mockLogger.Object);
     }
     
     [Fact]

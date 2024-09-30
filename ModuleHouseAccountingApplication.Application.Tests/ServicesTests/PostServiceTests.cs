@@ -2,7 +2,6 @@ using Application.Abstractions;
 using Application.DTO.Post.Request;
 using Application.Exceptions;
 using Application.Services;
-using AutoMapper;
 using Domain.StronglyTypedIds;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,22 +13,16 @@ namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 public class PostServiceTests
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly Mock<ILogger<PostService>> _mockLogger;
     private readonly IPostService _service;
 
     public PostServiceTests()
     {
-        var options = TestHelper.GetTestDbOptions();
-        
-        var rawContext = new MhDbContext(options);
-
-        TestHelper.SeedData(rawContext);
+        var rawContext = TestHelper.GetTestDbContext();
         
         _context = rawContext;
-        _mockLogger = new Mock<ILogger<PostService>>();
-        _mapper = TestHelper.CreateMapperProfile();
-        _service = new PostService(_context, _mapper, _mockLogger.Object);
+        Mock<ILogger<PostService>> mockLogger = new();
+        var mapper = TestHelper.CreateMapperProfile();
+        _service = new PostService(_context, mapper, mockLogger.Object);
     }
     
     [Fact]

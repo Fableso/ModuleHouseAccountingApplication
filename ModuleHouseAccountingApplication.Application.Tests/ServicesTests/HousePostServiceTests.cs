@@ -17,14 +17,11 @@ public class HousePostServiceTests
 
     public HousePostServiceTests()
     {
-        var options = TestHelper.GetTestDbOptions();
-        
-        var rawContext = new MhDbContext(options);
+        var rawContext = TestHelper.GetTestDbContext();
 
-        TestHelper.SeedData(rawContext);
-        
         _context = rawContext;
         _mockLogger = new Mock<ILogger<HousePostService>>();
+
         _service = new HousePostService(_context, _mockLogger.Object);
     }
     

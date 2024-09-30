@@ -1,9 +1,8 @@
 using System.Reflection;
-using System.Security.Authentication;
 using Application.Abstractions;
 using Domain.Entities;
 using Infrastructure.AuditSystem;
-using Infrastructure.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -12,11 +11,26 @@ namespace Infrastructure.Data;
 
 public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    public MhDbContext(DbContextOptions<MhDbContext> options)
+    private readonly string? _userId;
+    public MhDbContext(DbContextOptions<MhDbContext> options, IHttpContextAccessor httpContextAccessor)
         : base(options)
     {
+        string? authorizationHeader = httpContextAccessor.HttpContext?.Request.Headers["Authorization"];
+        if (!string.IsNullOrEmpty(authorizationHeader) && (authorizationHeader.StartsWith("Bearer") || authorizationHeader.StartsWith("bearer")))
+        {
+            var user = httpContextAccessor.HttpContext?.User;
+            var claim = user?.FindFirst("UserId");
+            if (claim is not null)
+            {
+                _userId = claim.Value;
+            }
+            else
+            {
+                throw new UnableToGetChangeAuthorIdException("Unable to determine the change author");
+            }
+        }
     }
-
+    
     public DbSet<House> Houses => Set<House>();
     public DbSet<HousePost> HousePosts => Set<HousePost>();
     public DbSet<Post> Posts => Set<Post>();
@@ -84,7 +98,6 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
     }
     public async Task AddAuditAsync(List<EntityAuditInformation> auditInformation, CancellationToken cancellationToken)
     {
-        var userId = await Users.Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
         foreach (var item in auditInformation)
         {
             var keyName = item.EntityEntry.FindPrimaryKeyPropertyName();
@@ -98,7 +111,7 @@ public class MhDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbCon
                 ChangeDate = DateTime.Now,
                 Operation = item.OperationType,
                 Changes = item.Changes,
-                ChangedById = userId ?? throw new UnableToGetChangeAuthorIdException("Unable to determine the change author")
+                ChangedById = _userId,
             };
 
             await Audits.AddAsync(audit, cancellationToken);

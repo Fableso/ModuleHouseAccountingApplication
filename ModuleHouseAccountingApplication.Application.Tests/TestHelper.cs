@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Abstractions;
 using Application.DTO.House.Request;
 using Application.DTO.House.Response;
@@ -14,8 +15,10 @@ using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Moq;
 
 namespace ModuleHouseAccountingApplication.Application.Tests;
 
@@ -30,6 +33,38 @@ public static class TestHelper
             .Options;
 
         return options;
+    }
+    
+    public static IHttpContextAccessor GetMockHttpContextAccessor(string userId = "TestUserId")
+    {
+        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+        
+        var mockHttpContext = new DefaultHttpContext();
+        mockHttpContext.Request.Headers["Authorization"] = "Bearer some-valid-token";
+        
+        var claims = new List<Claim>
+        {
+            new Claim("UserId", userId)
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var principal = new ClaimsPrincipal(identity);
+        mockHttpContext.User = principal;
+
+        mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(mockHttpContext);
+
+        return mockHttpContextAccessor.Object;
+    }
+
+    public static MhDbContext GetTestDbContext()
+    {
+        var options = GetTestDbOptions();
+        var httpContextAccessor = GetMockHttpContextAccessor();
+
+        var context = new MhDbContext(options, httpContextAccessor);
+
+        SeedData(context);
+
+        return context;
     }
     public static IMapper CreateMapperProfile()
     {

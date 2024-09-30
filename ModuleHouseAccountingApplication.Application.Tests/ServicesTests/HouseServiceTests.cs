@@ -1,7 +1,6 @@
 using Application.Abstractions;
 using Application.Exceptions;
 using Application.Services;
-using AutoMapper;
 using Domain.Enums;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
@@ -15,24 +14,20 @@ namespace ModuleHouseAccountingApplication.Application.Tests.ServicesTests;
 public class HouseServiceTests
 {
     private readonly IApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly Mock<IHousePostService> _mockHousePostService;
     private readonly Mock<ILogger<HouseService>> _mockLogger;
     private readonly IHouseService _service;
 
     public HouseServiceTests()
     {
-        var options = TestHelper.GetTestDbOptions();
-        
-        var rawContext = new MhDbContext(options);
-
-        TestHelper.SeedData(rawContext);
+        var rawContext = TestHelper.GetTestDbContext();
         
         _context = rawContext;
         _mockLogger = new Mock<ILogger<HouseService>>();
-        _mapper = TestHelper.CreateMapperProfile();
+        var mapper = TestHelper.CreateMapperProfile();
         _mockHousePostService = new Mock<IHousePostService>();
-        _service = new HouseService(_context, _mapper, _mockHousePostService.Object, _mockLogger.Object);
+
+        _service = new HouseService(_context, mapper, _mockHousePostService.Object, _mockLogger.Object);
     }
     
     [Fact]

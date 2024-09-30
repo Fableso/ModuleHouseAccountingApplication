@@ -5,7 +5,7 @@
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class ChangeauthoraddedtotheAuditstable : Migration
+    public partial class ChangeauthoraddedtotheAuditstablecs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,8 +14,7 @@ namespace Infrastructure.Migrations
                 name: "ChangedById",
                 table: "Audits",
                 type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Audits_ChangedById",
@@ -27,8 +26,7 @@ namespace Infrastructure.Migrations
                 table: "Audits",
                 column: "ChangedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
