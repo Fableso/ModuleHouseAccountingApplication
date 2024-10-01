@@ -1,6 +1,7 @@
 using Domain.Common;
 using FluentResults;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 
 namespace Web.Validation.Extensions;
 
@@ -39,5 +40,10 @@ public static class ValidationExtensions
                 context.AddFailure($"Collection contains duplicate values: {string.Join(", ", duplicates)}");
             }
         });
+    }
+
+    public static IRuleBuilderOptions<T, string> Password<T>(this IRuleBuilder<T, string> ruleBuilder, PasswordOptions passwordOptions)
+    {
+        return ruleBuilder.SetValidator(new Auth.PasswordValidator<T>(passwordOptions));
     }
 }

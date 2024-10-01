@@ -1,10 +1,12 @@
 using System.Reflection;
 using Application.DTO.House.Request;
 using Application.DTO.HouseWeekInfo.Request;
+using Application.DTO.Identity;
 using Application.DTO.Post.Request;
 using Application.DTO.WeekMark.Request;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Web.Validation.Auth;
 using Web.Validation.House;
 using Web.Validation.HouseWeekInfo;
 using Web.Validation.Post;
@@ -29,6 +31,8 @@ public static class DependencyInjection
 
         services.AddTransient<IValidator<CreateWeekMarkRequest>, WeekMarkValidator>();
         services.AddTransient<IValidator<UpdateWeekMarkRequest>, WeekMarkValidator>();
+
+        services.AddTransient<IValidator<CreateUserRequest>, CreateUserRequestValidator>();
 
         return services;
     }

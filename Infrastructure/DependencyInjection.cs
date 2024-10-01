@@ -29,7 +29,15 @@ public static class DependencyInjection
         
         services.AddHttpContextAccessor();
 
-        services.AddIdentityCore<ApplicationUser>()
+        services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.Password.RequiredLength = 9;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 5;
+            })
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<MhDbContext>()
         .AddDefaultTokenProviders();

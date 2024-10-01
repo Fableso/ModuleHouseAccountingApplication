@@ -1,10 +1,8 @@
 using Application.Abstractions;
 using Application.DTO.Identity;
-using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using IEmailSender = Microsoft.AspNetCore.Identity.UI.Services.IEmailSender;
+using Web.Validation.Extensions;
 
 namespace Web.Controllers;
 
@@ -15,7 +13,7 @@ public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
 
-    public AdminController(IAdminService adminService, IEmailSender emailSender)
+    public AdminController(IAdminService adminService)
     {
         _adminService = adminService;
     }
@@ -23,8 +21,14 @@ public class AdminController : ControllerBase
     [HttpPost("create-user")]
     public async Task<IActionResult> CreateUser(CreateUserRequest request)
     {
-        await _adminService.CreateUserAsync(request);
-        return Ok();
+        if (ModelState.IsValid)
+        {
+            await _adminService.CreateUserAsync(request);
+            return Ok();
+        }
+        
+        var errors = ModelState.GetValidationErrors();
+        return BadRequest(errors);
     }
     
     [HttpPost("delete-user")]
