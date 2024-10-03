@@ -16,8 +16,6 @@ builder.Services.AddControllers()
     .AddCustomModelBinders();
 
 builder.Services.AddValidation();
-builder.Services.AddSwaggerGen();
-
 builder.Services.AddSwaggerGen(c =>
 {
     var basePath = AppContext.BaseDirectory;
@@ -28,6 +26,7 @@ builder.Services.AddSwaggerGen(c =>
     
     c.EnableAnnotations();
     c.ExampleFilters();
+    c.SchemaFilter<StronglyTypedIdSchemaFilter>();
 });
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
