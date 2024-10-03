@@ -15,7 +15,7 @@ public class CreateUserRequest
     /// <remarks>
     /// The email address must be unique within the system and is used for user identification and login.
     /// </remarks>
-    /// <example>"user@example.com"</example>
+    /// <example>user@example.com</example>
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
@@ -24,7 +24,7 @@ public class CreateUserRequest
     /// <remarks>
     /// The password should be strong and contain a mix of letters, numbers, and special characters for better security.
     /// </remarks>
-    /// <example>"P@ssw0rd123"</example>
+    /// <example>P@ssw0rd123</example>
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
@@ -34,6 +34,6 @@ public class CreateUserRequest
     /// The role defines the level of access or permissions the user will have within the system.
     /// Typical roles could include "Admin", "User", or "Moderator".
     /// </remarks>
-    /// <example>"Spectator"</example>
+    /// <example>Spectator</example>
     public string Role { get; set; } = string.Empty;
 }

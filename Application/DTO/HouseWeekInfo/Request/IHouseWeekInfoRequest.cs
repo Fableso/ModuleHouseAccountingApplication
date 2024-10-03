@@ -16,7 +16,7 @@ public interface IHouseWeekInfoRequest
     /// <summary>
     /// Gets or sets the status of the weekly progress.
     /// </summary>
-    /// <example>"InProcess"</example>
+    /// <example>InProcess</example>
     WeekStatus Status { get; set; }
 
     /// <summary>

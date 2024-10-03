@@ -23,7 +23,7 @@ public class HouseWeekInfoResponse
     /// <summary>
     /// Gets or sets the identifier of the house model to which this weekly progress entry belongs.
     /// </summary>
-    /// <example>"HouseModel_123"</example>
+    /// <example>HouseModel_123</example>
     public HouseId HouseModel { get; set; }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class HouseWeekInfoResponse
     /// <summary>
     /// Gets or sets the current status of the weekly progress.
     /// </summary>
-    /// <example>"InProcess"</example>
+    /// <example>InProcess</example>
     public WeekStatus Status { get; set; }
 
     /// <summary>

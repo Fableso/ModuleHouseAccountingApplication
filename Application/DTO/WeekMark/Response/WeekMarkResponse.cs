@@ -37,7 +37,7 @@ public class WeekMarkResponse
     /// The <see cref="MarkType"/> categorizes the type of mark, such as "RedMark" to indicate an issue or "BlueMark" for observations or recommendations.
     /// This helps in identifying the nature of the comment or note.
     /// </remarks>
-    /// <example>"RedMark"</example>
+    /// <example>RedMark</example>
     public MarkType MarkType { get; set; }
 
     /// <summary>
@@ -47,6 +47,6 @@ public class WeekMarkResponse
     /// The comment provides additional context or notes regarding the mark, such as identified issues or suggestions for improvement.
     /// This property may be null if no specific comment was added.
     /// </remarks>
-    /// <example>"The roof requires a quality check due to observed sagging."</example>
+    /// <example>The roof requires a quality check due to observed sagging.</example>
     public string? Comment { get; set; }
 }

@@ -17,7 +17,7 @@ public interface IPostRequest
     /// The name should be descriptive and should clearly identify the purpose or function of the post.
     /// Examples include "Main", "Backyard", or "Garage Area".
     /// </remarks>
-    /// <example>"Main"</example>
+    /// <example>Main</example>
     string Name { get; set; }
 
     /// <summary>

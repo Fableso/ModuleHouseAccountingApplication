@@ -28,7 +28,7 @@ public sealed class CreateWeekMarkRequest : IWeekMarkRequest
     /// The <see cref="MarkType"/> indicates the category of the mark, such as a quality assessment or an identified issue.
     /// Typical values could include "RedMark", "BlueMark", etc., to signify different types of notes or flags.
     /// </remarks>
-    /// <example>"RedMark"</example>
+    /// <example>RedMark</example>
     public MarkType MarkType { get; set; }
 
     /// <summary>
@@ -38,6 +38,6 @@ public sealed class CreateWeekMarkRequest : IWeekMarkRequest
     /// The comment can include any relevant details regarding the mark, such as a note on an issue or a recommendation.
     /// This value is optional and can be null if no specific comment is needed.
     /// </remarks>
-    /// <example>"The foundation requires additional inspection due to visible cracks."</example>
+    /// <example>The foundation requires additional inspection due to visible cracks.</example>
     public string? Comment { get; set; }
 }

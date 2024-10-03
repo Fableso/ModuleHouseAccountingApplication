@@ -19,7 +19,7 @@ public sealed class HouseResponse
     /// <summary>
     /// Gets or sets the identifier or name of the house model.
     /// </summary>
-    /// <example>"HouseModel_123"</example>
+    /// <example>HouseModel_123</example>
     public HouseId Model { get; set; }
 
     /// <summary>
@@ -76,13 +76,13 @@ public sealed class HouseResponse
     /// <summary>
     /// Gets or sets the current status of the house construction.
     /// </summary>
-    /// <example>"Completed"</example>
+    /// <example>Completed</example>
     public HouseStatus CurrentState { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the brigade responsible for constructing the house.
     /// </summary>
-    /// <example>"Delta Brigade"</example>
+    /// <example>Delta Brigade</example>
     public string Brigade { get; set; } = string.Empty;
 
     /// <summary>

@@ -27,7 +27,7 @@ public sealed class UpdatePostRequest : IPostRequest
     /// The name should provide a descriptive label for the post, reflecting the updated purpose or function of the post.
     /// Examples might include "Renovated Main Section" or "Updated Backyard".
     /// </remarks>
-    /// <example>"Updated Backyard"</example>
+    /// <example>Updated Backyard</example>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

@@ -24,7 +24,7 @@ public sealed class PostResponse
     /// The name provides a descriptive label for the post, indicating its purpose or position within the project.
     /// Examples could include "Main Section" or "Backyard".
     /// </remarks>
-    /// <example>"Main"</example>
+    /// <example>Main</example>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

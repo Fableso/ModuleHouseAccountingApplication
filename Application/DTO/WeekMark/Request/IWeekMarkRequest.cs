@@ -18,7 +18,7 @@ public interface IWeekMarkRequest
     /// The <see cref="MarkType"/> defines the classification of the mark, such as a "RedMark" to indicate an issue or a "BlueMark" for general notes.
     /// This allows for effective categorization of observations during construction.
     /// </remarks>
-    /// <example>"RedMark"</example>
+    /// <example>RedMark</example>
     MarkType MarkType { get; set; }
 
     /// <summary>
@@ -28,6 +28,6 @@ public interface IWeekMarkRequest
     /// The comment is used to describe any relevant information related to the mark. It is optional and may be left empty if no comment is necessary.
     /// Examples might include notes on quality issues, suggestions, or any specific observations.
     /// </remarks>
-    /// <example>"Inspect the foundation cracks."</example>
+    /// <example>Inspect the foundation cracks.</example>
     string? Comment { get; set; }
 }

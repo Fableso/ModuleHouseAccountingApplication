@@ -1,7 +1,6 @@
 using Application;
 using Infrastructure;
 using Infrastructure.Identity;
-using Swashbuckle.AspNetCore.Filters;
 using Web.Extensions;
 using Web.Middleware;
 using Web.Swagger.Filters;

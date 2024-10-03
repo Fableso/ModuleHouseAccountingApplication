@@ -22,7 +22,7 @@ public sealed class UpdateHouseWeekInfoRequest : IHouseWeekInfoRequest
     /// <summary>
     /// Gets or sets the updated status of the weekly progress.
     /// </summary>
-    /// <example>"OnHold"</example>
+    /// <example>OnHold</example>
     public WeekStatus Status { get; set; }
 
     /// <summary>

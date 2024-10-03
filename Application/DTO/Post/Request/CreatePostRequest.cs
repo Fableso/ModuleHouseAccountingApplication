@@ -16,7 +16,7 @@ public sealed class CreatePostRequest : IPostRequest
     /// The name is used to identify the post and should be descriptive of the purpose or location of the post.
     /// Examples could include "Main Section", "Garage Area", or "Backyard".
     /// </remarks>
-    /// <example>"Main"</example>
+    /// <example>Main</example>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

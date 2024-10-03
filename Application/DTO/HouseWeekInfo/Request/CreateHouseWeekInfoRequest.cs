@@ -17,7 +17,7 @@ public sealed class CreateHouseWeekInfoRequest : IHouseWeekInfoRequest
     /// <summary>
     /// Gets or sets the identifier of the house for which the weekly progress is being created.
     /// </summary>
-    /// <example>"House_456"</example>
+    /// <example>House_456</example>
     public HouseId HouseId { get; set; }
 
     /// <summary>
@@ -35,6 +35,6 @@ public sealed class CreateHouseWeekInfoRequest : IHouseWeekInfoRequest
     /// <summary>
     /// Gets or sets the status of the weekly progress.
     /// </summary>
-    /// <example>"InProcess"</example>
+    /// <example>InProcess</example>
     public WeekStatus Status { get; set; }
 }
