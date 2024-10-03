@@ -1,4 +1,3 @@
-using System.Reflection;
 using Application;
 using Infrastructure;
 using Infrastructure.Identity;
@@ -25,9 +24,9 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(appXmlPath);
     
     c.EnableAnnotations();
-    c.ExampleFilters();
     c.SchemaFilter<StronglyTypedIdSchemaFilter>();
 });
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
