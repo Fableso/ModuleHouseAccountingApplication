@@ -195,7 +195,7 @@ public static class TestHelper
             StartDate = new DateOnly(2024, 8, 1),
             OnTime = true,
             Status = WeekStatus.InProcess,
-            HouseId = new HouseId("MB 110-1")
+            HouseModel = new HouseId("MB 110-1")
         };
         
         yield return new HouseWeekInfoResponse
@@ -204,7 +204,7 @@ public static class TestHelper
             StartDate = new DateOnly(2024, 8, 8),
             OnTime = true,
             Status = WeekStatus.OnHold,
-            HouseId = new HouseId("MB 110-1")
+            HouseModel = new HouseId("MB 110-1")
         };
         
         yield return new HouseWeekInfoResponse
@@ -213,7 +213,7 @@ public static class TestHelper
             StartDate = new DateOnly(2024, 8, 15),
             OnTime = false,
             Status = WeekStatus.OnHold,
-            HouseId = new HouseId("MB 110-1")
+            HouseModel = new HouseId("MB 110-1")
         };
         
         yield return new HouseWeekInfoResponse
@@ -222,7 +222,7 @@ public static class TestHelper
             StartDate = new DateOnly(2023, 9, 8),
             OnTime = false,
             Status = WeekStatus.InProcess,
-            HouseId = new HouseId("MB 140-1")
+            HouseModel = new HouseId("MB 140-1")
         };
         
         yield return new HouseWeekInfoResponse
@@ -230,7 +230,7 @@ public static class TestHelper
             Id = new HouseWeekInfoId(5),
             StartDate = new DateOnly(2023, 9, 15),
             Status = WeekStatus.InProcess,
-            HouseId = new HouseId("MB 140-1"),
+            HouseModel = new HouseId("MB 140-1"),
             OnTime = true,
         };
         
@@ -239,7 +239,7 @@ public static class TestHelper
             Id = new HouseWeekInfoId(6),
             StartDate = new DateOnly(2025, 8, 20),
             Status = WeekStatus.OnHold,
-            HouseId = new HouseId("MB 56-1"),
+            HouseModel = new HouseId("MB 56-1"),
             OnTime = false
         };
         
@@ -248,7 +248,7 @@ public static class TestHelper
             Id = new HouseWeekInfoId(7),
             StartDate = new DateOnly(2025, 8, 27),
             Status = WeekStatus.OnHold,
-            HouseId = new HouseId("MB 56-1"),
+            HouseModel = new HouseId("MB 56-1"),
             OnTime = true
         };
         
@@ -257,7 +257,7 @@ public static class TestHelper
             Id = new HouseWeekInfoId(8),
             StartDate = new DateOnly(2025, 9, 5),
             Status = WeekStatus.OnHold,
-            HouseId = new HouseId("MB 56-1"),
+            HouseModel = new HouseId("MB 56-1"),
             OnTime = false
         };
     }

@@ -188,7 +188,7 @@ public class HouseWeekInfoServiceTests
         // Assert
         Assert.NotNull(houseWeekInfoResponse);
         Assert.Equal(expectedHouseWeekInfoAmount, await _context.HouseWeekInfos.CountAsync());
-        Assert.Equal(createHouseWeekInfoRequest.HouseId, houseWeekInfoResponse.HouseId);
+        Assert.Equal(createHouseWeekInfoRequest.HouseId, houseWeekInfoResponse.HouseModel);
         Assert.Equal(createHouseWeekInfoRequest.StartDate, houseWeekInfoResponse.StartDate);
         Assert.Equal(createHouseWeekInfoRequest.Status, houseWeekInfoResponse.Status);
         Assert.Equal(createHouseWeekInfoRequest.OnTime, houseWeekInfoResponse.OnTime);

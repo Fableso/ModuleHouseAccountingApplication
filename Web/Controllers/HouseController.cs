@@ -2,7 +2,6 @@ using Application.Abstractions;
 using Application.DTO.House.Request;
 using Domain.StronglyTypedIds;
 using Domain.ValueObjects;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Validation.Extensions;

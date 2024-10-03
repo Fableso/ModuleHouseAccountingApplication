@@ -1,8 +1,11 @@
+using System.Reflection;
 using Application;
 using Infrastructure;
 using Infrastructure.Identity;
+using Swashbuckle.AspNetCore.Filters;
 using Web.Extensions;
 using Web.Middleware;
+using Web.Swagger.Filters;
 using Web.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,17 @@ builder.Services.AddControllers()
 builder.Services.AddValidation();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    var basePath = AppContext.BaseDirectory;
+    var webXmlPath = Path.Combine(basePath, "Web.xml");
+    var appXmlPath = Path.Combine(basePath, "Application.xml");
+    c.IncludeXmlComments(webXmlPath);
+    c.IncludeXmlComments(appXmlPath);
+    
+    c.EnableAnnotations();
+    c.ExampleFilters();
+});
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 

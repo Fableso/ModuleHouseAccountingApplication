@@ -43,7 +43,7 @@ public sealed class HouseWeekInfoResponseComparer : IEqualityComparer<HouseWeekI
         if (x is null || y is null) return false;
 
         return Equals(x.Id, y.Id)
-               && Equals(x.HouseId, y.HouseId)
+               && Equals(x.HouseModel, y.HouseModel)
                && x.StartDate == y.StartDate
                && x.OnTime == y.OnTime
                && x.Status == y.Status;
@@ -53,7 +53,7 @@ public sealed class HouseWeekInfoResponseComparer : IEqualityComparer<HouseWeekI
     {
         var hash = 17;
         hash = hash * 23 + obj.Id.GetHashCode();
-        hash = hash * 23 + obj.HouseId.GetHashCode();
+        hash = hash * 23 + obj.HouseModel.GetHashCode();
         hash = hash * 23 + obj.StartDate.GetHashCode();
         hash = hash * 23 + obj.OnTime.GetHashCode();
         hash = hash * 23 + obj.Status.GetHashCode();
